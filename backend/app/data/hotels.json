@@ -1,0 +1,956 @@
+[
+  {
+    "id": 1,
+    "name": "Ocean Hotel",
+    "location": "Goa",
+    "price": 5543,
+    "rating": 4.8,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+    "amenities": [
+      "Restaurant",
+      "Mountain View",
+      "Beach Access",
+      "Ocean View"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 2,
+    "name": "Palm Resort",
+    "location": "Goa",
+    "price": 2126,
+    "rating": 3.8,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    "amenities": [
+      "Bonfire",
+      "Breakfast",
+      "Mountain View",
+      "Free WiFi"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 3,
+    "name": "Sea Suites",
+    "location": "Goa",
+    "price": 8930,
+    "rating": 4.7,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Restaurant",
+      "Parking",
+      "Gym",
+      "Bonfire"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 4,
+    "name": "Ocean Suites",
+    "location": "Goa",
+    "price": 6531,
+    "rating": 4.5,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Pool",
+      "Rooftop Pool",
+      "Bonfire",
+      "Airport Shuttle"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 5,
+    "name": "Sea Hotel",
+    "location": "Goa",
+    "price": 4495,
+    "rating": 4.4,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "AC Rooms",
+      "Free WiFi",
+      "Spa",
+      "Fine Dining"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 6,
+    "name": "Peak Resort",
+    "location": "Manali",
+    "price": 8283,
+    "rating": 4.8,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    "amenities": [
+      "Fine Dining",
+      "Spa",
+      "Breakfast",
+      "Pool"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 7,
+    "name": "Himalayan Retreat",
+    "location": "Manali",
+    "price": 7613,
+    "rating": 4.6,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+    "amenities": [
+      "Pool",
+      "Fine Dining",
+      "Garden View",
+      "Airport Shuttle"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 8,
+    "name": "Himalayan Suites",
+    "location": "Manali",
+    "price": 1262,
+    "rating": 4.0,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Breakfast",
+      "Fine Dining",
+      "Pool",
+      "Free WiFi"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 9,
+    "name": "Peak Suites",
+    "location": "Manali",
+    "price": 8114,
+    "rating": 4.5,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Parking",
+      "Garden View",
+      "Rooftop Pool",
+      "Spa"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 10,
+    "name": "Himalayan Suites",
+    "location": "Manali",
+    "price": 1394,
+    "rating": 3.8,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Spa",
+      "Parking",
+      "Gym",
+      "Beach Access"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 11,
+    "name": "Pink Retreat",
+    "location": "Jaipur",
+    "price": 7333,
+    "rating": 4.6,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Beach Access",
+      "Rooftop Pool",
+      "Fine Dining",
+      "Free WiFi"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 12,
+    "name": "Palace Inn",
+    "location": "Jaipur",
+    "price": 1636,
+    "rating": 3.8,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+    "amenities": [
+      "Mountain View",
+      "Gym",
+      "Restaurant",
+      "Beach Access"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 13,
+    "name": "Pink Hotel",
+    "location": "Jaipur",
+    "price": 5881,
+    "rating": 4.5,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Fine Dining",
+      "Pool",
+      "Breakfast",
+      "Free WiFi"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 14,
+    "name": "Heritage Resort",
+    "location": "Jaipur",
+    "price": 3969,
+    "rating": 4.2,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Beach Access",
+      "AC Rooms",
+      "Gym",
+      "Restaurant"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 15,
+    "name": "Palace Suites",
+    "location": "Jaipur",
+    "price": 7016,
+    "rating": 4.6,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Spa",
+      "Ocean View",
+      "Rooftop Pool",
+      "Free WiFi"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 16,
+    "name": "Spice Hotel",
+    "location": "Kerala",
+    "price": 2133,
+    "rating": 4.0,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "amenities": [
+      "Fine Dining",
+      "Ocean View",
+      "Mountain View",
+      "Rooftop Pool"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 17,
+    "name": "Spice Resort",
+    "location": "Kerala",
+    "price": 3277,
+    "rating": 4.2,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    "amenities": [
+      "Gym",
+      "Restaurant",
+      "Rooftop Pool",
+      "AC Rooms"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 18,
+    "name": "Spice Inn",
+    "location": "Kerala",
+    "price": 1988,
+    "rating": 3.9,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Bonfire",
+      "Free WiFi",
+      "Fine Dining",
+      "Rooftop Pool"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 19,
+    "name": "Lake Resort",
+    "location": "Kerala",
+    "price": 5607,
+    "rating": 4.5,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "amenities": [
+      "Ocean View",
+      "Airport Shuttle",
+      "Restaurant",
+      "Garden View"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 20,
+    "name": "Coconut Suites",
+    "location": "Kerala",
+    "price": 7824,
+    "rating": 4.9,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Fine Dining",
+      "Breakfast",
+      "Spa",
+      "Pool"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 21,
+    "name": "City Resort",
+    "location": "Mumbai",
+    "price": 2975,
+    "rating": 4.1,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Fine Dining",
+      "Spa",
+      "AC Rooms",
+      "Parking"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 22,
+    "name": "City Inn",
+    "location": "Mumbai",
+    "price": 3693,
+    "rating": 4.5,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Fine Dining",
+      "Parking",
+      "Gym",
+      "Free WiFi"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 23,
+    "name": "Grand Hotel",
+    "location": "Mumbai",
+    "price": 4171,
+    "rating": 4.1,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    "amenities": [
+      "Breakfast",
+      "Spa",
+      "Gym",
+      "Pool"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 24,
+    "name": "City Hotel",
+    "location": "Mumbai",
+    "price": 1486,
+    "rating": 4.0,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Fine Dining",
+      "Airport Shuttle",
+      "Mountain View",
+      "Restaurant"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 25,
+    "name": "Harbor Suites",
+    "location": "Mumbai",
+    "price": 4899,
+    "rating": 4.8,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    "amenities": [
+      "Mountain View",
+      "AC Rooms",
+      "Ocean View",
+      "Rooftop Pool"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 26,
+    "name": "Metro Retreat",
+    "location": "Delhi",
+    "price": 5745,
+    "rating": 4.7,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "amenities": [
+      "Ocean View",
+      "Spa",
+      "Pool",
+      "Bonfire"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 27,
+    "name": "Crown Hotel",
+    "location": "Delhi",
+    "price": 1614,
+    "rating": 4.0,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+    "amenities": [
+      "AC Rooms",
+      "Ocean View",
+      "Gym",
+      "Free WiFi"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 28,
+    "name": "Urban Resort",
+    "location": "Delhi",
+    "price": 1458,
+    "rating": 3.7,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Fine Dining",
+      "Spa",
+      "Bonfire",
+      "Pool"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 29,
+    "name": "Imperial Resort",
+    "location": "Delhi",
+    "price": 3514,
+    "rating": 4.4,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Bonfire",
+      "Pool",
+      "Garden View",
+      "Airport Shuttle"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 30,
+    "name": "Urban Retreat",
+    "location": "Delhi",
+    "price": 4728,
+    "rating": 4.6,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Beach Access",
+      "AC Rooms",
+      "Parking",
+      "Airport Shuttle"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 31,
+    "name": "Heritage Suites",
+    "location": "Udaipur",
+    "price": 3856,
+    "rating": 4.1,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Restaurant",
+      "Pool",
+      "Rooftop Pool",
+      "Garden View"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 32,
+    "name": "Palace Resort",
+    "location": "Udaipur",
+    "price": 7103,
+    "rating": 4.9,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+    "amenities": [
+      "Beach Access",
+      "Gym",
+      "Ocean View",
+      "Garden View"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 33,
+    "name": "Royal Suites",
+    "location": "Udaipur",
+    "price": 3229,
+    "rating": 4.0,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "amenities": [
+      "Gym",
+      "Beach Access",
+      "Pool",
+      "Airport Shuttle"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 34,
+    "name": "Lake Retreat",
+    "location": "Udaipur",
+    "price": 7222,
+    "rating": 4.8,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+    "amenities": [
+      "Bonfire",
+      "Restaurant",
+      "Parking",
+      "Airport Shuttle"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 35,
+    "name": "Rajput Resort",
+    "location": "Udaipur",
+    "price": 7384,
+    "rating": 4.7,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "AC Rooms",
+      "Mountain View",
+      "Restaurant",
+      "Bonfire"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 36,
+    "name": "Valley Resort",
+    "location": "Shimla",
+    "price": 5144,
+    "rating": 4.8,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Gym",
+      "Restaurant",
+      "Beach Access",
+      "Parking"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 37,
+    "name": "Pine Suites",
+    "location": "Shimla",
+    "price": 2434,
+    "rating": 3.7,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "amenities": [
+      "Free WiFi",
+      "Breakfast",
+      "Fine Dining",
+      "Restaurant"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 38,
+    "name": "Valley Suites",
+    "location": "Shimla",
+    "price": 8850,
+    "rating": 4.9,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Free WiFi",
+      "Fine Dining",
+      "Spa",
+      "Parking"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 39,
+    "name": "Valley Hotel",
+    "location": "Shimla",
+    "price": 4027,
+    "rating": 4.5,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Spa",
+      "AC Rooms",
+      "Restaurant",
+      "Free WiFi"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 40,
+    "name": "Hill Suites",
+    "location": "Shimla",
+    "price": 7744,
+    "rating": 4.8,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Ocean View",
+      "Parking",
+      "Restaurant",
+      "Pool"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 41,
+    "name": "Palm Hotel",
+    "location": "Dubai",
+    "price": 7722,
+    "rating": 4.6,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Mountain View",
+      "Gym",
+      "Free WiFi",
+      "Spa"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 42,
+    "name": "Sky Inn",
+    "location": "Dubai",
+    "price": 4266,
+    "rating": 4.0,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Free WiFi",
+      "Gym",
+      "Airport Shuttle",
+      "Spa"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 43,
+    "name": "Luxury Hotel",
+    "location": "Dubai",
+    "price": 3673,
+    "rating": 4.0,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Free WiFi",
+      "Garden View",
+      "Rooftop Pool",
+      "Pool"
+    ],
+    "description": "Comfortable accommodation ideal for families and travelers."
+  },
+  {
+    "id": 44,
+    "name": "Desert Suites",
+    "location": "Dubai",
+    "price": 2603,
+    "rating": 4.2,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Garden View",
+      "Fine Dining",
+      "Ocean View",
+      "Parking"
+    ],
+    "description": "Premium stay with modern amenities and beautiful surroundings."
+  },
+  {
+    "id": 45,
+    "name": "Royal Resort",
+    "location": "Dubai",
+    "price": 2328,
+    "rating": 3.8,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "AC Rooms",
+      "Breakfast",
+      "Bonfire",
+      "Spa"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 46,
+    "name": "Tropical Retreat",
+    "location": "Bali",
+    "price": 2685,
+    "rating": 4.1,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Bonfire",
+      "Mountain View",
+      "Free WiFi",
+      "Breakfast"
+    ],
+    "description": "Luxury property offering exceptional hospitality and experiences."
+  },
+  {
+    "id": 47,
+    "name": "Tropical Retreat",
+    "location": "Bali",
+    "price": 3967,
+    "rating": 4.2,
+    "type": "Standard",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "AC Rooms",
+      "Gym",
+      "Mountain View",
+      "Beach Access"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+    "id": 48,
+    "name": "Lagoon Retreat",
+    "location": "Bali",
+    "price": 2400,
+    "rating": 3.9,
+    "type": "Budget",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+    "amenities": [
+      "Pool",
+      "Ocean View",
+      "Fine Dining",
+      "Rooftop Pool"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 49,
+    "name": "Tropical Suites",
+    "location": "Bali",
+    "price": 6868,
+    "rating": 4.6,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+    "amenities": [
+      "Gym",
+      "Garden View",
+      "Restaurant",
+      "Mountain View"
+    ],
+    "description": "Elegant hotel with spacious rooms and scenic views."
+  },
+  {
+    "id": 50,
+    "name": "Lagoon Retreat",
+    "location": "Bali",
+    "price": 6819,
+    "rating": 4.7,
+    "type": "Luxury",
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+    "amenities": [
+      "Breakfast",
+      "Fine Dining",
+      "Airport Shuttle",
+      "Mountain View"
+    ],
+    "description": "Affordable stay located near major tourist attractions."
+  },
+  {
+  "id": 100,
+  "name": "The Khyber Himalayan Resort",
+  "location": "Kashmir",
+  "price": 8500,
+  "rating": 4.8,
+  "type": "Luxury",
+  "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+  "amenities": ["Mountain View", "Spa", "Free WiFi", "Breakfast"],
+  "description": "Luxury mountain resort in Gulmarg with scenic Himalayan views."
+},
+{
+  "id": 101,
+  "name": "Dal Lake View Hotel",
+  "location": "Kashmir",
+  "price": 4200,
+  "rating": 4.4,
+  "type": "Standard",
+  "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+  "amenities": ["Lake View", "Restaurant", "Free WiFi", "Parking"],
+  "description": "Comfortable stay near Dal Lake with beautiful views."
+},
+{
+  "id": 102,
+  "name": "Pahalgam Retreat",
+  "location": "Kashmir",
+  "price": 3200,
+  "rating": 4.2,
+  "type": "Budget",
+  "image": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+  "amenities": ["Mountain View", "Bonfire", "Breakfast", "Parking"],
+  "description": "Affordable mountain retreat in Pahalgam."
+},
+{
+  "id": 103,
+  "name": "Bangkok Sky Resort",
+  "location": "Thailand",
+  "price": 5400,
+  "rating": 4.6,
+  "type": "Luxury",
+  "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+  "amenities": ["Pool", "Spa", "Free WiFi", "Restaurant"],
+  "description": "Luxury resort in Bangkok with skyline city views."
+},
+{
+  "id": 104,
+  "name": "Phuket Beach Retreat",
+  "location": "Thailand",
+  "price": 3800,
+  "rating": 4.3,
+  "type": "Standard",
+  "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+  "amenities": ["Beach Access", "Breakfast", "Pool", "Free WiFi"],
+  "description": "Comfortable beachside stay near Phuket attractions."
+},
+{
+  "id": 105,
+  "name": "Island Paradise Hotel",
+  "location": "Thailand",
+  "price": 2700,
+  "rating": 4.1,
+  "type": "Budget",
+  "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+  "amenities": ["Restaurant", "AC Rooms", "Airport Shuttle", "Breakfast"],
+  "description": "Affordable tropical hotel with island vibes."
+},
+{
+  "id": 106,
+  "name": "Eiffel Grand Hotel",
+  "location": "Paris",
+  "price": 9200,
+  "rating": 4.8,
+  "type": "Luxury",
+  "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750",
+  "amenities": ["Fine Dining", "City View", "Free WiFi", "Spa"],
+  "description": "Luxury Paris hotel near Eiffel Tower."
+},
+{
+  "id": 107,
+  "name": "Seine River Suites",
+  "location": "Paris",
+  "price": 6100,
+  "rating": 4.5,
+  "type": "Standard",
+  "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+  "amenities": ["Breakfast", "Restaurant", "City View", "Free WiFi"],
+  "description": "Elegant hotel near Seine River and museums."
+},
+{
+  "id": 108,
+  "name": "Alpine Snow Resort",
+  "location": "Switzerland",
+  "price": 9800,
+  "rating": 4.9,
+  "type": "Luxury",
+  "image": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85",
+  "amenities": ["Mountain View", "Spa", "Breakfast", "Pool"],
+  "description": "Luxury Swiss Alps resort with panoramic mountain views."
+},
+{
+  "id": 109,
+  "name": "Zurich Lake Hotel",
+  "location": "Switzerland",
+  "price": 6400,
+  "rating": 4.6,
+  "type": "Standard",
+  "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+  "amenities": ["Lake View", "Restaurant", "Free WiFi", "Parking"],
+  "description": "Scenic hotel near Zurich lake and city center."
+},
+{
+  "id": 110,
+  "name": "Leh Mountain Camp",
+  "location": "Ladakh",
+  "price": 4200,
+  "rating": 4.4,
+  "type": "Standard",
+  "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+  "amenities": ["Bonfire", "Mountain View", "Breakfast", "Parking"],
+  "description": "Adventure mountain camp stay in Leh."
+},
+{
+  "id": 111,
+  "name": "Pangong Lake Retreat",
+  "location": "Ladakh",
+  "price": 5800,
+  "rating": 4.7,
+  "type": "Luxury",
+  "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+  "amenities": ["Lake View", "Restaurant", "Campfire", "Free WiFi"],
+  "description": "Premium lakeside stay near Pangong Lake."
+},
+{
+  "id": 112,
+  "name": "Ganga Riverside Resort",
+  "location": "Rishikesh",
+  "price": 3500,
+  "rating": 4.3,
+  "type": "Standard",
+  "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
+  "amenities": ["River View", "Yoga Center", "Free WiFi", "Breakfast"],
+  "description": "Peaceful riverside resort with yoga sessions."
+},
+{
+  "id": 113,
+  "name": "Himalayan Yoga Retreat",
+  "location": "Rishikesh",
+  "price": 2500,
+  "rating": 4.1,
+  "type": "Budget",
+  "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
+  "amenities": ["Meditation Hall", "Restaurant", "Parking", "Garden View"],
+  "description": "Affordable yoga retreat surrounded by nature."
+}
+]
