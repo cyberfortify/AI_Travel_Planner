@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generatePlan } from "../services/api";
 import { useLocation, Link } from "react-router-dom";
 import {
@@ -6,6 +6,9 @@ import {
   Sparkles, Hotel, UtensilsCrossed, Car, Compass,
   ChevronRight, RotateCcw, TrendingUp, Menu, X, User
 } from "lucide-react";
+import AuthModal from "../components/AuthModal";
+import Navbar from "../components/Navbar";
+import { saveTrip } from "../services/api";
 
 const BUDGET_META = {
   accommodation: { icon: Hotel, color: "#6366f1", dim: "rgba(99,102,241,0.08)", border: "rgba(99,102,241,0.18)" },
@@ -28,6 +31,7 @@ export default function Planner() {
   const location = useLocation();
   const initRes = location.state?.result || null;
   const initData = location.state?.formData || {};
+  const [saveMessage, setSaveMessage] = useState("");
 
   const [result, setResult] = useState(initRes);
   const [formData, setFormData] = useState({ destination: initData.destination || "", budget: initData.budget || "", days: initData.days || "" });
@@ -36,9 +40,84 @@ export default function Planner() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDay, setActiveDay] = useState(0);
 
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authType, setAuthType] = useState("login");
+
+  const [authUser, setAuthUser] = useState(() => {
+    const stored = localStorage.getItem("trevellyUser");
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  const [pendingSave, setPendingSave] = useState(false);
+
+  const handleSaveTrip = async () => {
+
+    console.log("SAVE CLICKED");
+
+    // CHECK LOGIN
+    const storedUser = localStorage.getItem(
+      "trevellyUser"
+    );
+    console.log(storedUser);
+
+    // USER NOT LOGGED IN
+    if (!storedUser) {
+      console.log("OPENING AUTH MODAL");
+      setPendingSave(true);
+      setAuthType("login");
+      setAuthOpen(true);
+      return;
+    }
+
+    // USER EXISTS
+    const user = JSON.parse(storedUser);
+
+    try {
+
+      await saveTrip({
+        user_email: user.email,
+        trip_data: result,
+      });
+
+      setSaveMessage("✅ Trip saved successfully!");
+
+      setTimeout(() => {
+        setSaveMessage("");
+      }, 3000);
+
+    } catch (err) {
+
+      alert("Failed to save trip");
+    }
+  };
+
+  useEffect(() => {
+
+    const storedUser = localStorage.getItem(
+      "trevellyUser"
+    );
+
+    if (
+      pendingSave &&
+      storedUser &&
+      result
+    ) {
+
+      handleSaveTrip();
+
+      setPendingSave(false);
+    }
+
+  }, [pendingSave]);
+
   const onChange = (e) => {
     setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
     if (errors[e.target.name]) setErrors(p => ({ ...p, [e.target.name]: "" }));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("trevellyUser");
+    setAuthUser(null);
   };
 
   const validate = () => {
@@ -83,86 +162,7 @@ export default function Planner() {
       <div style={{ position: "fixed", bottom: 0, right: 0, width: "45vw", height: "45vw", background: "radial-gradient(circle,rgba(5,30,80,0.30) 0%,transparent 65%)", transform: "translate(25%,25%)", zIndex: 0, pointerEvents: "none" }} />
 
       {/* NAVIGATION */}
-      <nav className="relative z-50 flex items-center justify-between px-6 sm:px-10 md:px-16 py-5">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 hover:scale-105 transition-transform">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, #00c8d4, #1a6fcc)" }}
-          >
-            <Plane size={16} color="white" />
-          </div>
-          <span className="text-white font-bold text-lg tracking-wide">Trevelly</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {["Home", ...navLinks.map((l) => l.name)].map((name, i) => {
-            const link = navLinks.find((l) => l.name === name);
-            return link ? (
-              <Link
-                key={name}
-                to={link.path}
-                className="text-sm font-medium transition-colors"
-                style={{
-                  color:
-                    location.pathname === link.path ? "#fff" : "rgba(255,255,255,0.55)",
-                }}
-              >
-                {name}
-              </Link>
-            ) : (
-              <Link
-                key={name}
-                to="/"
-                className="text-sm font-medium text-white"
-              >
-                {name}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Auth buttons */}
-        <div className="hidden md:flex items-center gap-3">
-          <button
-            className="text-sm font-semibold text-white px-4 py-2 rounded-lg transition-all"
-
-          >
-            Sign Up
-          </button>
-          <button
-            className="text-sm font-semibold px-4 py-2 rounded-lg transition-all border"
-            style={{ color: "#00d4e0", borderColor: "#00d4e0" }}
-          >
-            Register
-          </button>
-        </div>
-
-        {/* Mobile icons */}
-        <div className="flex md:hidden items-center gap-3">
-          {navLinks.map((link) => (
-            <Link key={link.path} to={link.path} className="p-2 text-white rounded-lg" aria-label={link.name}>
-              <link.icon size={22} />
-            </Link>
-          ))}
-          <button className="p-2 text-white rounded-lg" aria-label="Login"><User size={22} /></button>
-        </div>
-      </nav>
-
-      {/* Mobile drawer */}
-      {mobileMenuOpen && (
-        <div style={{ position: "absolute", top: 65, left: 16, right: 16, zIndex: 99, background: "rgba(8,20,40,0.98)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 16 }}>
-          {[{ name: "Home", path: "/" }, ...navLinks].map(l => (
-            <Link key={l.path} to={l.path} onClick={() => setMobileMenuOpen(false)}
-              style={{ display: "block", color: "rgba(255,255,255,0.7)", fontSize: 14, padding: "10px 14px", borderRadius: 10, textDecoration: "none" }}>{l.name}</Link>
-          ))}
-          <div style={{ display: "flex", gap: 8, marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <button style={{ flex: 1, background: "rgba(255,255,255,0.07)", border: "none", color: "#fff", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Sign Up</button>
-            <button style={{ flex: 1, background: "transparent", border: "1px solid #00d4e0", color: "#00d4e0", borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Register</button>
-          </div>
-        </div>
-      )}
+      <Navbar />
 
       <div style={{ position: "relative", zIndex: 10 }}>
 
@@ -302,6 +302,24 @@ export default function Planner() {
               : "44px 24px 80px"
           }}>
 
+            {saveMessage && (
+              <div
+                style={{
+                  marginBottom: 24,
+                  padding: "14px 18px",
+                  borderRadius: 16,
+                  background: "rgba(16,185,129,0.08)",
+                  border: "1px solid rgba(16,185,129,0.18)",
+                  color: "#6ee7b7",
+                  fontSize: 14,
+                  fontWeight: 700,
+                  backdropFilter: "blur(12px)",
+                }}
+              >
+                {saveMessage}
+              </div>
+            )}
+
             {/* ── Hero bar ── */}
             <div
               style={{
@@ -414,44 +432,93 @@ export default function Planner() {
               </div>
 
               {/* RIGHT BUTTON */}
-              <button
-                onClick={() => setResult(null)}
+              {/* RIGHT ACTIONS */}
+              <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "rgba(255,255,255,0.75)",
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: 14,
-                  padding:
-                    window.innerWidth < 768
-                      ? "14px 18px"
-                      : "12px 18px",
-                  cursor: "pointer",
-                  transition: "all .25s ease",
+                  gap: 12,
                   width: window.innerWidth < 768 ? "100%" : "auto",
-                  minHeight: 48,
-                  flexShrink: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "#fff";
-                  e.currentTarget.style.background =
-                    "rgba(255,255,255,0.09)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color =
-                    "rgba(255,255,255,0.75)";
-                  e.currentTarget.style.background =
-                    "rgba(255,255,255,0.05)";
+                  flexDirection:
+                    window.innerWidth < 768 ? "column" : "row",
                 }}
               >
-                <RotateCcw size={14} />
-                Plan New Trip
-              </button>
+
+                {/* SAVE BUTTON */}
+                <button
+                  onClick={handleSaveTrip}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: "#fff",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 14,
+                    padding:
+                      window.innerWidth < 768
+                        ? "14px 18px"
+                        : "12px 18px",
+                    cursor: "pointer",
+                    transition: "all .25s ease",
+                    width: window.innerWidth < 768 ? "100%" : "auto",
+                    minHeight: 48,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.09)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.05)";
+                  }}
+                >
+                  ❤️ Save Trip
+                </button>
+
+                {/* PLAN NEW TRIP */}
+                <button
+                  onClick={() => setResult(null)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.75)",
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 14,
+                    padding:
+                      window.innerWidth < 768
+                        ? "14px 18px"
+                        : "12px 18px",
+                    cursor: "pointer",
+                    transition: "all .25s ease",
+                    width: window.innerWidth < 768 ? "100%" : "auto",
+                    minHeight: 48,
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "#fff";
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.09)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color =
+                      "rgba(255,255,255,0.75)";
+                    e.currentTarget.style.background =
+                      "rgba(255,255,255,0.05)";
+                  }}
+                >
+                  <RotateCcw size={14} />
+                  Plan New Trip
+                </button>
+
+              </div>
             </div>
 
             {/* ── HORIZONTAL BUDGET SECTION ── */}
@@ -1272,7 +1339,17 @@ export default function Planner() {
         </footer>
 
 
+        <AuthModal
+          open={authOpen}
+          onClose={() => setAuthOpen(false)}
+          type={authType}
+          setAuthUser={setAuthUser}
+        />
+
+
       </div>
     </div >
+
+
   );
 }

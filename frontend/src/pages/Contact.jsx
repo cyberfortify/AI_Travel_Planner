@@ -1,221 +1,370 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
+function useWindowWidth() {
+  const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  useEffect(() => {
+    const h = () => setW(window.innerWidth);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
+  return w;
+}
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    // Clear error for this field when user starts typing
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
-    }
-  };
+const FAQS = [
+  { q: "How fast will you respond?", a: "We typically respond within a few hours — never more than 24. For urgent issues, try our live chat." },
+  { q: "Is Trevelly free to use?", a: "Yes. Core trip planning is completely free. No credit card, no hidden fees." },
+  { q: "Can I request a custom destination?", a: "Absolutely — just mention it in your message and our team will manually build your plan." },
+  { q: "Do you have a mobile app?", a: "A dedicated mobile app is in the works. For now, our web experience works great on all devices." },
+];
 
-  const validateForm = () => {
-    let newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-    if (!formData.message.trim()) newErrors.message = "Message is required";
-    return newErrors;
-  };
+function FloatingOrb({ style }) {
+  return <div style={{ position: "fixed", borderRadius: "50%", pointerEvents: "none", zIndex: 0, ...style }} />;
+}
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-    // Simulate form submission
-    console.log(formData);
-    setSubmitted(true);
-    setFormData({ name: "", email: "", message: "" });
-    // Reset success message after 5 seconds
-    setTimeout(() => setSubmitted(false), 5000);
-  };
-
+function Field({ label, icon, error, children }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans antialiased">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 text-white py-20 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
-          <p className="text-lg text-indigo-100 max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll respond within 24-48 hours.
-          </p>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
-      </section>
-
-      {/* Contact Section */}
-      <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Info Card */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-50 to-sky-50 p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Connect With Us</h2>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800">Email Us</h3>
-                    <p className="text-gray-600">support@trevelly.com</p>
-                    <p className="text-gray-500 text-sm">Response within 24h</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800">Call Us</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-gray-500 text-sm">Mon-Fri, 9am-6pm EST</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800">Visit Us</h3>
-                    <p className="text-gray-600">123 Travel Street, Suite 100</p>
-                    <p className="text-gray-500 text-sm">San Francisco, CA 94105</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="p-8 border-t border-gray-100">
-              <h3 className="font-semibold text-gray-800 mb-4">Follow Us</h3>
-              <div className="flex gap-4">
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-indigo-100 transition-colors">
-                  <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.99h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.99C18.343 21.128 22 16.991 22 12z" />
-                  </svg>
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-indigo-100 transition-colors">
-                  <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.104c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0021.385-12.401c0-.21-.005-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                  </svg>
-                </a>
-                <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-indigo-100 transition-colors">
-                  <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.336 3.608 1.31.975.975 1.248 2.242 1.31 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.336 2.633-1.31 3.608-.975.975-2.242 1.248-3.608 1.31-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.336-3.608-1.31-.975-.975-1.248-2.242-1.31-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.336-2.633 1.31-3.608.975-.975 2.242-1.248 3.608-1.31 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.279.058-2.422.306-3.357 1.241-.935.935-1.183 2.078-1.241 3.357-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.058 1.279.306 2.422 1.241 3.357.935.935 2.078 1.183 3.357 1.241 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.279-.058 2.422-.306 3.357-1.241.935-.935 1.183-2.078 1.241-3.357.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.058-1.279-.306-2.422-1.241-3.357-.935-.935-2.078-1.183-3.357-1.241-1.28-.058-1.688-.072-4.947-.072z" />
-                    <path d="M12 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8z" />
-                    <circle cx="18.406" cy="5.594" r="1.44" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Form Card */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Send a Message</h2>
-            {submitted && (
-              <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-xl flex items-center gap-2 animate-fadeIn">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Message sent successfully! We'll get back to you soon.
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name *</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition`}
-                    placeholder="John Doe"
-                  />
-                </div>
-                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition`}
-                    placeholder="you@example.com"
-                  />
-                </div>
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Your Message *</label>
-                <div className="relative">
-                  <div className="absolute top-3 left-3 pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                  </div>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows="5"
-                    className={`block w-full pl-10 pr-3 py-3 border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition`}
-                    placeholder="Tell us how we can help..."
-                  ></textarea>
-                </div>
-                {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-indigo-600 to-sky-500 text-white py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-sky-600 transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Send Message
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
+    <div>
+      <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 8 }}>
+        <span style={{ fontSize: 12 }}>{icon}</span>{label}
+      </label>
+      {children}
+      {error && <p style={{ color: "#f87171", fontSize: 10, margin: "5px 0 0", display: "flex", alignItems: "center", gap: 4 }}><span>⚠</span>{error}</p>}
     </div>
   );
-};
+}
 
-export default Contact;
+export default function Contact() {
+  const w = useWindowWidth();
+  const isMobile = w < 640;
+  const isTablet = w >= 640 && w < 1024;
+  const isDesktop = w >= 1024;
+  const px = isMobile ? "20px" : isTablet ? "36px" : "56px";
+
+  const [form, setForm] = useState({ name: "", email: "", type: "General", message: "" });
+  const [errors, setErrors] = useState({});
+  const [step, setStep] = useState("idle"); // idle | sending | done
+  const [openFaq, setOpenFaq] = useState(null);
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+  const [activeField, setActiveField] = useState(null);
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm(p => ({ ...p, [name]: value }));
+    if (name === "message") setCharCount(value.length);
+    if (errors[name]) setErrors(p => ({ ...p, [name]: "" }));
+  };
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = "Required";
+    if (!form.email.trim()) e.email = "Required";
+    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Invalid email";
+    if (!form.message.trim()) e.message = "Required";
+    return e;
+  };
+
+  const onSubmit = () => {
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setStep("sending");
+    setTimeout(() => {
+      setStep("done");
+      setForm({ name: "", email: "", type: "General", message: "" });
+      setCharCount(0);
+      setTimeout(() => setStep("idle"), 6000);
+    }, 1800);
+  };
+
+  const types = ["General", "Support", "Partnership", "Feedback"];
+
+  const inputStyle = (name) => ({
+    width: "100%", boxSizing: "border-box",
+    padding: "13px 16px",
+    borderRadius: 14, fontSize: 13,
+    background: activeField === name
+      ? "rgba(0,212,224,0.04)"
+      : errors[name]
+        ? "rgba(239,68,68,0.05)"
+        : "rgba(255,255,255,0.03)",
+    border: `1.5px solid ${activeField === name
+        ? "rgba(0,212,224,0.5)"
+        : errors[name]
+          ? "rgba(239,68,68,0.5)"
+          : "rgba(255,255,255,0.07)"
+      }`,
+    color: "#fff", outline: "none",
+    caretColor: "#00d4e0",
+    transition: "all .2s",
+    fontFamily: "inherit",
+  });
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#060d18", fontFamily: "'Inter',system-ui,sans-serif", color: "#fff", overflowX: "hidden" }}>
+
+      {/* Orbs */}
+      <FloatingOrb style={{ top: "-15%", left: "-10%", width: "55vw", height: "55vw", background: "radial-gradient(circle,rgba(0,180,210,0.09),transparent 65%)" }} />
+      <FloatingOrb style={{ top: "40%", right: "-10%", width: "40vw", height: "40vw", background: "radial-gradient(circle,rgba(99,102,241,0.08),transparent 65%)" }} />
+      <FloatingOrb style={{ bottom: "-10%", left: "30%", width: "35vw", height: "35vw", background: "radial-gradient(circle,rgba(245,158,11,0.04),transparent 65%)" }} />
+
+      {/* ── NAV ── */}
+      <Navbar />
+
+      <div style={{ position: "relative", zIndex: 5 }}>
+
+        {/* ── SPLIT HERO ── */}
+        <section style={{ maxWidth: 1200, margin: "0 auto", padding: `${isMobile ? "52px" : "72px"} ${px} ${isMobile ? "48px" : "60px"}` }}>
+          <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr", gap: isDesktop ? 60 : 0, alignItems: "center" }}>
+
+            {/* Left headline */}
+            <div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 14px", borderRadius: 99, background: "rgba(0,212,224,0.06)", border: "1px solid rgba(0,212,224,0.18)", fontSize: 11, fontWeight: 700, color: "#00d4e0", letterSpacing: 1.1, textTransform: "uppercase", marginBottom: 24 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#00d4e0", display: "inline-block", animation: "pulse 2s infinite" }} />
+                We're here to help
+              </div>
+              <h1 style={{ fontSize: `clamp(${isMobile ? "2rem" : "2.6rem"},5.5vw,4.2rem)`, fontWeight: 900, lineHeight: 1.06, letterSpacing: "-.025em", margin: "0 0 20px" }}>
+                Let's Start<br />a{" "}
+                <span style={{ position: "relative", display: "inline-block" }}>
+                  <span style={{ background: "linear-gradient(135deg,#00d4e0,#6366f1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Conversation</span>
+                  <svg style={{ position: "absolute", bottom: -6, left: 0, width: "100%", overflow: "visible" }} height="6" viewBox="0 0 200 6">
+                    <path d="M0 5 Q50 0 100 5 Q150 10 200 5" stroke="#00d4e0" strokeWidth="1.5" fill="none" opacity=".5" />
+                  </svg>
+                </span>
+              </h1>
+              <p style={{ fontSize: isMobile ? 14 : 15, color: "rgba(255,255,255,0.38)", lineHeight: 1.85, maxWidth: 420, margin: "0 0 32px" }}>
+                Whether it's a question, idea, or just a hello — we read every message and reply thoughtfully, not with templates.
+              </p>
+
+              {/* stat row */}
+              <div style={{ display: "flex", gap: isMobile ? 20 : 32, flexWrap: "wrap" }}>
+                {[{ v: "< 24h", l: "Response time" }, { v: "98%", l: "Satisfaction" }, { v: "Real", l: "Human support" }].map((s, i) => (
+                  <div key={i}>
+                    <p style={{ fontSize: isMobile ? 18 : 22, fontWeight: 900, margin: "0 0 2px", background: "linear-gradient(135deg,#fff,rgba(255,255,255,0.6))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{s.v}</p>
+                    <p style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", margin: 0, fontWeight: 500 }}>{s.l}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* contact chips — desktop only */}
+              {!isMobile && (
+                <div style={{ display: "flex", gap: 10, marginTop: 32, flexWrap: "wrap" }}>
+                  {[
+                    { icon: "📧", label: "support@trevelly.com", color: "#00d4e0" },
+                    { icon: "📞", label: "+91 98765 43210", color: "#6366f1" },
+                  ].map((c, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 99, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", fontSize: 12, color: "rgba(255,255,255,0.5)", cursor: "pointer", transition: "all .2s" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = c.color + "44"; e.currentTarget.style.color = "#fff"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}>
+                      <span>{c.icon}</span><span>{c.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right — decorative card on desktop */}
+            {isDesktop && (
+              <div style={{ position: "relative" }}>
+                <div style={{ borderRadius: 28, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", padding: "28px 28px 24px", backdropFilter: "blur(20px)" }}>
+                  {/* "typing" animation header */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#00c8d4,#1a6fcc)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>✈️</div>
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 1px" }}>Trevelly Support</p>
+                      <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
+                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>Online now</span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* mock messages */}
+                  {[
+                    { who: "them", text: "Hi there! 👋 How can we help you today?", time: "Just now" },
+                    { who: "you", text: "I need help planning a trip to Goa next month.", time: "Just now" },
+                    { who: "them", text: "We'd love to help! Fill the form and we'll build a custom plan for you 🗺️", time: "Just now" },
+                  ].map((m, i) => (
+                    <div key={i} style={{ display: "flex", justifyContent: m.who === "you" ? "flex-end" : "flex-start", marginBottom: 12 }}>
+                      <div style={{
+                        maxWidth: "78%", padding: "10px 14px", borderRadius: m.who === "you" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                        background: m.who === "you" ? "linear-gradient(135deg,rgba(0,200,212,0.25),rgba(26,111,204,0.2))" : "rgba(255,255,255,0.05)",
+                        border: m.who === "you" ? "1px solid rgba(0,212,224,0.25)" : "1px solid rgba(255,255,255,0.06)",
+                        fontSize: 12, color: m.who === "you" ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.6)", lineHeight: 1.55,
+                      }}>
+                        {m.text}
+                        <p style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", margin: "5px 0 0", textAlign: m.who === "you" ? "right" : "left" }}>{m.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {/* typing dots */}
+                  <div style={{ display: "flex", gap: 4, padding: "10px 14px", borderRadius: "16px 16px 16px 4px", background: "rgba(255,255,255,0.04)", width: "fit-content" }}>
+                    {[0, 1, 2].map(d => (
+                      <span key={d} style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "inline-block", animation: `bounce .9s ${d * 0.15}s infinite` }} />
+                    ))}
+                  </div>
+                </div>
+                {/* decorative glow behind card */}
+                <div style={{ position: "absolute", inset: "-20px", borderRadius: 40, background: "radial-gradient(circle,rgba(0,212,224,0.06),transparent 70%)", zIndex: -1, pointerEvents: "none" }} />
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── FORM + SIDEBAR ── */}
+        <section style={{ maxWidth: 1200, margin: "0 auto", padding: `0 ${px} ${isMobile ? "72px" : "100px"}` }}>
+          <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1.5fr 1fr" : "1fr", gap: isDesktop ? 28 : 24, alignItems: "start" }}>
+
+            {/* ── FORM CARD ── */}
+            <div style={{ borderRadius: 24, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", overflow: "hidden" }}>
+
+              {/* card top strip */}
+              <div style={{ height: 3, background: "linear-gradient(90deg,#00c8d4,#6366f1,#ec4899)" }} />
+
+              <div style={{ padding: isMobile ? "24px 20px 28px" : "32px 32px 36px" }}>
+                <div style={{ marginBottom: 28 }}>
+                  <h2 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, margin: "0 0 6px" }}>Send a message</h2>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: 0 }}>No bots. No templates. Just real humans who care.</p>
+                </div>
+
+                {/* success state */}
+                {step === "done" && (
+                  <div style={{ marginBottom: 24, padding: "20px", borderRadius: 16, background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.25)", textAlign: "center" }}>
+                    <div style={{ fontSize: 36, marginBottom: 8 }}>🎉</div>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: "#10b981", margin: "0 0 4px" }}>Message received!</p>
+                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: 0 }}>We'll be in touch within 24 hours.</p>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+
+                  {/* Name + Email */}
+                  <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
+                    <Field label="Full Name" icon="👤" error={errors.name}>
+                      <input name="name" value={form.name} onChange={onChange} placeholder="Arjun Sharma"
+                        style={inputStyle("name")}
+                        onFocus={() => setActiveField("name")}
+                        onBlur={() => setActiveField(null)} />
+                    </Field>
+                    <Field label="Email Address" icon="📧" error={errors.email}>
+                      <input name="email" value={form.email} onChange={onChange} placeholder="you@example.com"
+                        style={inputStyle("email")}
+                        onFocus={() => setActiveField("email")}
+                        onBlur={() => setActiveField(null)} />
+                    </Field>
+                  </div>
+
+                  {/* Type selector */}
+                  <Field label="Message Type" icon="🏷️">
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {types.map(t => (
+                        <button key={t} onClick={() => setForm(p => ({ ...p, type: t }))}
+                          style={{
+                            padding: "8px 18px", borderRadius: 99, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1.5px solid",
+                            background: form.type === t ? "linear-gradient(135deg,rgba(0,200,212,0.2),rgba(99,102,241,0.15))" : "rgba(255,255,255,0.03)",
+                            borderColor: form.type === t ? "rgba(0,212,224,0.55)" : "rgba(255,255,255,0.08)",
+                            color: form.type === t ? "#00d4e0" : "rgba(255,255,255,0.4)",
+                            transition: "all .2s",
+                          }}>
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </Field>
+
+                  {/* Message */}
+                  <Field label="Your Message" icon="💬" error={errors.message}>
+                    <div style={{ position: "relative" }}>
+                      <textarea name="message" value={form.message} onChange={onChange} rows={5}
+                        placeholder="Tell us what's on your mind…"
+                        style={{ ...inputStyle("message"), paddingTop: 14, resize: "vertical", lineHeight: 1.65 }}
+                        onFocus={() => setActiveField("message")}
+                        onBlur={() => setActiveField(null)} />
+                      <span style={{ position: "absolute", bottom: 10, right: 12, fontSize: 10, color: "rgba(255,255,255,0.2)", pointerEvents: "none" }}>{charCount}/500</span>
+                    </div>
+                  </Field>
+
+                  {/* Submit */}
+                  <button onClick={onSubmit} disabled={step === "sending"}
+                    style={{
+                      width: "100%", padding: "15px", borderRadius: 14, border: "none",
+                      background: step === "sending" ? "rgba(0,180,210,0.25)" : "linear-gradient(135deg,#00c8d4,#1a6fcc)",
+                      color: "#fff", fontSize: 14, fontWeight: 700, cursor: step === "sending" ? "not-allowed" : "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 9,
+                      boxShadow: step === "sending" ? "none" : "0 8px 28px rgba(0,180,210,0.28)",
+                      transition: "transform .15s, box-shadow .15s",
+                    }}
+                    onMouseEnter={e => { if (step !== "sending") { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 36px rgba(0,180,210,0.38)"; } }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,180,210,0.28)"; }}>
+                    {step === "sending" ? (
+                      <><svg style={{ animation: "spin 1s linear infinite" }} width={15} height={15} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#fff" strokeWidth="3" fill="none" strokeDasharray="30" strokeDashoffset="10" /></svg>Sending…</>
+                    ) : <>Send Message <span style={{ fontSize: 16 }}>→</span></>}
+                  </button>
+
+                  <p style={{ fontSize: 11, color: "rgba(255,255,255,0.18)", textAlign: "center", margin: 0 }}>
+                    🔒 Your data is private and never shared with third parties.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ── SIDEBAR ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+
+              {/* Availability */}
+              <div style={{ borderRadius: 20, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", padding: "22px 22px", overflow: "hidden", position: "relative" }}>
+                <div style={{ position: "absolute", top: "-40%", right: "-30%", width: 180, height: 180, background: "radial-gradient(circle,rgba(0,212,224,0.07),transparent 70%)", pointerEvents: "none" }} />
+                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 16px" }}>📡 Reach Us</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {[
+                    { icon: "📧", label: "Email", value: "support@trevelly.com", color: "#00d4e0" },
+                    { icon: "📞", label: "Phone", value: "+91 98765 43210", color: "#6366f1" },
+                    { icon: "📍", label: "Office", value: "Bangalore, India", color: "#f59e0b" },
+                  ].map((c, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 13, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)", cursor: "pointer", transition: "all .2s" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = c.color + "44"; e.currentTarget.style.background = `${c.color}08`; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.background = "rgba(255,255,255,0.025)"; }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 11, background: `${c.color}15`, border: `1px solid ${c.color}28`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{c.icon}</div>
+                      <div>
+                        <p style={{ fontSize: 10, fontWeight: 700, color: c.color, letterSpacing: .8, textTransform: "uppercase", margin: "0 0 2px" }}>{c.label}</p>
+                        <p style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.65)", margin: 0 }}>{c.value}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Social */}
+              <div style={{ borderRadius: 20, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", padding: "22px 22px" }}>
+                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 14px" }}>🌐 Social</p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}>
+                  {[
+                    { platform: "Twitter", handle: "@trevelly_ai", emoji: "𝕏", color: "#00d4e0" },
+                    { platform: "Instagram", handle: "@trevelly", emoji: "📸", color: "#ec4899" },
+                    { platform: "LinkedIn", handle: "Trevelly", emoji: "in", color: "#6366f1" },
+                    { platform: "YouTube", handle: "Trevelly AI", emoji: "▶", color: "#f59e0b" },
+                  ].map((s, i) => (
+                    <div key={i} style={{ padding: "12px", borderRadius: 14, background: "rgba(255,255,255,0.025)", border: `1px solid rgba(255,255,255,0.06)`, cursor: "pointer", transition: "all .2s", textAlign: "center" }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = s.color + "44"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.background = `${s.color}0a`; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = "rgba(255,255,255,0.025)"; }}>
+                      <div style={{ fontSize: 20, marginBottom: 5 }}>{s.emoji}</div>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.7)", margin: "0 0 2px" }}>{s.platform}</p>
+                      <p style={{ fontSize: 10, color: "rgba(255,255,255,0.28)", margin: 0 }}>{s.handle}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <style>{`
+        @keyframes spin   { to { transform: rotate(360deg); } }
+        @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:.4} }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+      `}</style>
+    </div>
+  );
+}

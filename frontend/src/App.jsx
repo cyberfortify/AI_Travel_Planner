@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Planner from "./pages/Planner";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import SavedTrips from "./pages/SavedTrips";
+import Profile from "./pages/Profile";
 
 function App() {
   const [phase, setPhase] = useState("loading");
@@ -36,6 +38,8 @@ function App() {
               <Route path="/planner" element={<Planner />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/saved-trips" element={<SavedTrips />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </div>
         </BrowserRouter>

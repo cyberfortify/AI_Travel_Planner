@@ -1,164 +1,356 @@
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
-const About = () => {
-  const navigate = useNavigate();
+function useWindowWidth() {
+  const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  useEffect(() => {
+    const h = () => setW(window.innerWidth);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
+  return w;
+}
+
+function Badge({ children }) {
+  return (
+    <span style={{
+      display:"inline-flex",alignItems:"center",gap:6,
+      padding:"5px 14px",borderRadius:99,
+      background:"rgba(0,212,224,0.07)",border:"1px solid rgba(0,212,224,0.2)",
+      fontSize:11,fontWeight:700,color:"#00d4e0",letterSpacing:1,textTransform:"uppercase",
+    }}>{children}</span>
+  );
+}
+
+function AnimatedNumber({ target, suffix="" }) {
+  const [val, setVal] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started.current) {
+        started.current = true;
+        let start = null;
+        const duration = 1600;
+        const step = (ts) => {
+          if (!start) start = ts;
+          const p = Math.min((ts - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          setVal(Math.floor(ease * target));
+          if (p < 1) requestAnimationFrame(step);
+          else setVal(target);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.4 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [target]);
+  return <span ref={ref}>{val.toLocaleString()}{suffix}</span>;
+}
+
+const FEATURES = [
+  { icon:"⚡", color:"#00d4e0", glow:"rgba(0,212,224,0.12)", title:"Instant Planning", desc:"Generate a full day-wise itinerary in under 30 seconds — no research, no tabs, no stress." },
+  { icon:"💰", color:"#10b981", glow:"rgba(16,185,129,0.12)", title:"Budget-Smart", desc:"Every rupee is distributed across stays, food, transport & activities. Stay on track, always." },
+  { icon:"🏨", color:"#6366f1", glow:"rgba(99,102,241,0.12)", title:"Curated Hotels", desc:"Handpicked accommodations filtered by your budget and destination — no surprises on checkout." },
+  { icon:"🌍", color:"#f59e0b", glow:"rgba(245,158,11,0.12)", title:"500+ Destinations", desc:"From Bali beaches to Himalayan peaks — Trevelly knows where you want to be." },
+  { icon:"📱", color:"#ec4899", glow:"rgba(236,72,153,0.12)", title:"Beautifully Simple", desc:"Three fields. One click. A complete trip plan. No learning curve whatsoever." },
+  { icon:"🔄", color:"#8b5cf6", glow:"rgba(139,92,246,0.12)", title:"Always Improving", desc:"Our AI and destination data is continuously updated so your plans stay fresh and accurate." },
+];
+
+const STATS = [
+  { value:10000, suffix:"+", label:"Trips Planned",   icon:"🗺️" },
+  { value:500,   suffix:"+", label:"Destinations",    icon:"📍" },
+  { value:98,    suffix:"%", label:"Happy Travelers", icon:"😊" },
+  { value:30,    suffix:"s", label:"Avg Plan Time",   icon:"⚡" },
+];
+
+const TEAM = [
+  { name:"Aditya Sharma", role:"Founder & CEO",    emoji:"👨‍💼", color:"#00d4e0" },
+  { name:"Priya Mehta",   role:"Head of AI",        emoji:"👩‍💻", color:"#6366f1" },
+  { name:"Rahul Verma",   role:"Lead Designer",     emoji:"🎨",  color:"#f59e0b" },
+  { name:"Sneha Pillai",  role:"Travel Curator",    emoji:"🌏",  color:"#10b981" },
+];
+
+const TIMELINE = [
+  { year:"2023",    title:"The Idea",          desc:"Born out of frustration with 10-tab travel planning. We knew there was a better way." },
+  { year:"Q1 2024", title:"Beta Launch",       desc:"First version shipped to 200 early users. 94% said they'd use it again." },
+  { year:"Q3 2024", title:"500+ Destinations", desc:"Expanded our destination database and launched budget intelligence engine." },
+  { year:"2025",    title:"10K Trips Planned", desc:"Passed a major milestone. Travelers from 30+ countries had used Trevelly." },
+  { year:"Today",   title:"Growing Fast",      desc:"Continuous AI improvements, new features, and a community of passionate travelers." },
+];
+
+export default function About() {
+  const w = useWindowWidth();
+  const isMobile  = w < 640;
+  const isTablet  = w >= 640 && w < 1024;
+  const isDesktop = w >= 1024;
+
+  const px = isMobile ? "20px" : isTablet ? "32px" : "48px";
+  const location = useLocation();
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const featureCols = isMobile ? "1fr" : isTablet ? "1fr 1fr" : "1fr 1fr 1fr";
+  const statsCols   = isMobile ? "1fr 1fr" : "repeat(4,1fr)";
+  const teamCols    = isMobile ? "1fr 1fr" : isTablet ? "repeat(4,1fr)" : "repeat(4,1fr)";
 
   return (
-    <div className="font-sans antialiased overflow-x-hidden">
+    <div style={{
+      minHeight:"100vh",
+      background:"linear-gradient(160deg,#07101f 0%,#0a1628 40%,#060e1c 100%)",
+      fontFamily:"'Inter',system-ui,sans-serif",
+      color:"#fff",
+      overflowX:"hidden",
+    }}>
+      {/* Ambient glows */}
+      <div style={{position:"fixed",top:"-10%",left:"-10%",width:"50vw",height:"50vw",background:"radial-gradient(circle,rgba(0,180,210,0.10),transparent 65%)",pointerEvents:"none",zIndex:0}}/>
+      <div style={{position:"fixed",bottom:"-10%",right:"-10%",width:"40vw",height:"40vw",background:"radial-gradient(circle,rgba(99,102,241,0.08),transparent 65%)",pointerEvents:"none",zIndex:0}}/>
 
-      {/* HERO SECTION */}
-      <section className="relative bg-gradient-to-br from-indigo-600 via-indigo-500 to-sky-500 text-white py-24 px-6 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 mb-8">
-            <span className="text-yellow-300">✨</span>
-            <span className="text-sm font-medium">Your AI Travel Companion</span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-            About <span className="bg-gradient-to-r from-yellow-200 to-amber-200 bg-clip-text text-transparent">Trevelly</span>
+      {/* ── NAV ── */}
+      <Navbar />
+
+      <div style={{position:"relative",zIndex:5}}>
+
+        {/* ── HERO ── */}
+        <section style={{padding:`${isMobile?"52px":"80px"} ${px} ${isMobile?"60px":"90px"}`,textAlign:"center",maxWidth:900,margin:"0 auto"}}>
+          <Badge>✨ Your AI Travel Companion</Badge>
+          <h1 style={{fontSize:`clamp(${isMobile?"1.8rem":"2.4rem"},6vw,4rem)`,fontWeight:900,margin:"22px 0 18px",lineHeight:1.08,letterSpacing:"-.02em"}}>
+            We're Building the<br/>
+            <span style={{background:"linear-gradient(135deg,#00d4e0,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>
+              Future of Travel Planning
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed">
-            Trevelly is an AI-powered travel planner that helps you create smart itineraries,
-            manage your budget, and find the best hotels — all in seconds.
+          <p style={{fontSize:isMobile?14:16,color:"rgba(255,255,255,0.45)",lineHeight:1.8,maxWidth:580,margin:"0 auto 32px"}}>
+            Trevelly is an AI-powered travel planner that turns your destination dreams into
+            detailed, budget-friendly itineraries — in seconds, not hours.
           </p>
-        </div>
-        {/* Decorative blobs */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-sky-400/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-      </section>
+          <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
+            <button style={{padding:isMobile?"11px 22px":"13px 28px",borderRadius:14,border:"none",background:"linear-gradient(135deg,#00c8d4,#1a6fcc)",color:"#fff",fontSize:isMobile?13:14,fontWeight:700,cursor:"pointer",boxShadow:"0 8px 28px rgba(0,180,210,0.3)"}}>
+              Start Planning Free →
+            </button>
+            <button style={{padding:isMobile?"11px 22px":"13px 28px",borderRadius:14,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.7)",fontSize:isMobile?13:14,fontWeight:600,cursor:"pointer"}}>
+              Watch Demo ▶
+            </button>
+          </div>
+          <div style={{display:"flex",gap:isMobile?12:20,justifyContent:"center",marginTop:28,flexWrap:"wrap"}}>
+            {["No credit card","Free to use","Instant results"].map(t=>(
+              <span key={t} style={{fontSize:12,color:"rgba(255,255,255,0.3)",display:"flex",alignItems:"center",gap:5}}>
+                <span style={{color:"#10b981"}}>✓</span>{t}
+              </span>
+            ))}
+          </div>
+        </section>
 
-      {/* MISSION SECTION */}
-      <section className="py-20 px-6 md:px-8 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 rounded-full px-4 py-1.5 mb-6">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span className="text-sm font-medium">Our Purpose</span>
+        {/* ── STATS ── */}
+        <section style={{maxWidth:1100,margin:"0 auto",padding:`0 ${px} ${isMobile?"56px":"80px"}`}}>
+          <div style={{
+            display:"grid",gridTemplateColumns:statsCols,gap:isMobile?14:20,
+            background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",
+            borderRadius:24,padding:isMobile?"24px 20px":"40px 32px",
+          }}>
+            {STATS.map((s,i)=>(
+              <div key={i} style={{textAlign:"center",padding:isMobile?"8px 0":"0"}}>
+                <div style={{fontSize:isMobile?22:28,marginBottom:8}}>{s.icon}</div>
+                <div style={{fontSize:`clamp(1.6rem,${isMobile?"5vw":"4vw"},2.8rem)`,fontWeight:900,background:"linear-gradient(135deg,#00d4e0,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",lineHeight:1}}>
+                  <AnimatedNumber target={s.value} suffix={s.suffix}/>
+                </div>
+                <div style={{fontSize:isMobile?11:13,color:"rgba(255,255,255,0.38)",marginTop:6,fontWeight:500}}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── MISSION ── */}
+        <section style={{maxWidth:1100,margin:"0 auto",padding:`0 ${px} ${isMobile?"60px":"90px"}`}}>
+          <div style={{
+            display:"grid",
+            gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+            gap: isDesktop ? 48 : 36,
+            alignItems:"center",
+          }}>
+            <div>
+              <Badge>🎯 Our Purpose</Badge>
+              <h2 style={{fontSize:`clamp(${isMobile?"1.5rem":"1.8rem"},4vw,2.6rem)`,fontWeight:900,margin:"20px 0 18px",lineHeight:1.15}}>
+                Travel Should Be<br/>Experienced, Not{" "}
+                <span style={{background:"linear-gradient(135deg,#00d4e0,#6366f1)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Spreadsheet-Managed</span>
+              </h2>
+              <p style={{fontSize:isMobile?13:15,color:"rgba(255,255,255,0.45)",lineHeight:1.8,marginBottom:14}}>
+                We built Trevelly because planning a trip shouldn't feel like a second job.
+                Hours of research, 20 open tabs, conflicting reviews — it's exhausting.
+              </p>
+              <p style={{fontSize:isMobile?13:15,color:"rgba(255,255,255,0.45)",lineHeight:1.8}}>
+                Whether you're a solo backpacker, a family planner, or a spontaneous weekend-tripper —
+                Trevelly gives you a smart, personalised itinerary in seconds.
+              </p>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Our Mission
-            </h2>
-            <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
-              <p>
-                We aim to simplify travel planning by combining automation and intelligence,
-                so you can focus on enjoying your journey instead of planning it.
-              </p>
-              <p>
-                Whether you're traveling solo, with friends, or family — Trevelly helps you
-                build the perfect trip without the hassle.
-              </p>
+
+            {/* Mock itinerary card */}
+            <div style={{
+              borderRadius:24,background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.07)",
+              padding: isMobile ? "22px 18px" : "28px",
+              overflow:"hidden",position:"relative",
+            }}>
+              <div style={{marginBottom:16,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <span style={{fontSize:isMobile?12:13,fontWeight:700,color:"rgba(255,255,255,0.6)"}}>📅 Your Goa Itinerary</span>
+                <span style={{fontSize:11,padding:"3px 10px",borderRadius:99,background:"rgba(16,185,129,0.15)",color:"#10b981",fontWeight:700}}>7 Days</span>
+              </div>
+              {[
+                {day:1,title:"Arrival & Baga Beach",color:"#00d4e0"},
+                {day:2,title:"Fort Aguada & Old Goa",color:"#6366f1"},
+                {day:3,title:"Anjuna Market & Water Sports",color:"#f59e0b"},
+                {day:4,title:"Dudhsagar Waterfalls Trip",color:"#10b981"},
+              ].map((item,i)=>(
+                <div key={i} style={{display:"flex",gap:12,padding:"11px 13px",borderRadius:12,background:"rgba(255,255,255,0.03)",border:`1px solid ${item.color}22`,marginBottom:8,alignItems:"center"}}>
+                  <div style={{width:32,height:32,borderRadius:9,background:`${item.color}18`,border:`1px solid ${item.color}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:item.color,flexShrink:0}}>{item.day}</div>
+                  <span style={{fontSize:isMobile?11:12,color:"rgba(255,255,255,0.6)"}}>{item.title}</span>
+                </div>
+              ))}
+              <div style={{textAlign:"center",padding:"8px 0 0",color:"rgba(255,255,255,0.2)",fontSize:11}}>+ 3 more days planned</div>
+              <div style={{position:"absolute",top:"-30%",right:"-20%",width:200,height:200,background:"radial-gradient(circle,rgba(0,212,224,0.07),transparent 70%)",pointerEvents:"none"}}/>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* FEATURES SECTION */}
-      <section className="py-20 px-6 md:px-8 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 rounded-full px-4 py-1.5 mb-4">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-              <span className="text-sm font-medium">Why Choose Us</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+        {/* ── FEATURES ── */}
+        <section style={{maxWidth:1100,margin:"0 auto",padding:`0 ${px} ${isMobile?"60px":"90px"}`}}>
+          <div style={{textAlign:"center",marginBottom:isMobile?32:48}}>
+            <Badge>⭐ Why Choose Us</Badge>
+            <h2 style={{fontSize:`clamp(${isMobile?"1.5rem":"1.8rem"},4vw,2.6rem)`,fontWeight:900,margin:"20px 0 10px",lineHeight:1.1}}>
               Why Travelers Love Trevelly
             </h2>
-            <p className="text-gray-500 mt-3 max-w-2xl mx-auto">
-              Smart features designed to make your journey seamless
+            <p style={{fontSize:isMobile?12:14,color:"rgba(255,255,255,0.35)",maxWidth:460,margin:"0 auto"}}>
+              Smart features designed to make your journey seamless from idea to departure.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-indigo-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                <svg className="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+          <div style={{display:"grid",gridTemplateColumns:featureCols,gap:isMobile?14:18}}>
+            {FEATURES.map((f,i)=>(
+              <div key={i}
+                onMouseEnter={()=>setHoveredFeature(i)}
+                onMouseLeave={()=>setHoveredFeature(null)}
+                style={{
+                  padding: isMobile ? "20px 18px" : "28px 26px",
+                  borderRadius:20,cursor:"default",
+                  background: hoveredFeature===i ? f.glow : "rgba(255,255,255,0.025)",
+                  border:`1px solid ${hoveredFeature===i ? f.color+"44" : "rgba(255,255,255,0.06)"}`,
+                  transform: hoveredFeature===i ? "translateY(-5px)" : "translateY(0)",
+                  boxShadow: hoveredFeature===i ? `0 16px 40px ${f.glow}` : "none",
+                  transition:"all .3s ease",
+                }}>
+                <div style={{width:44,height:44,borderRadius:13,background:f.glow,border:`1px solid ${f.color}30`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:14,transition:"transform .3s",transform:hoveredFeature===i?"scale(1.1)":"scale(1)"}}>
+                  {f.icon}
+                </div>
+                <h3 style={{fontSize:isMobile?13:15,fontWeight:700,color:"#fff",margin:"0 0 7px"}}>{f.title}</h3>
+                <p style={{fontSize:isMobile?12:13,color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:0}}>{f.desc}</p>
               </div>
-              <h3 className="text-xl font-bold mb-3">Fast Planning</h3>
-              <p className="text-gray-500 leading-relaxed">
-                Generate your entire trip plan in seconds — no more endless research.
-              </p>
-            </div>
+            ))}
+          </div>
+        </section>
 
-            {/* Feature 2 */}
-            <div className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-indigo-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                <svg className="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+        {/* ── TIMELINE ── */}
+        <section style={{maxWidth:1100,margin:"0 auto",padding:`0 ${px} ${isMobile?"60px":"90px"}`}}>
+          <div style={{textAlign:"center",marginBottom:isMobile?32:48}}>
+            <Badge>📖 Our Story</Badge>
+            <h2 style={{fontSize:`clamp(${isMobile?"1.5rem":"1.8rem"},4vw,2.6rem)`,fontWeight:900,margin:"20px 0 10px"}}>
+              The Trevelly Journey
+            </h2>
+          </div>
+          <div style={{position:"relative",maxWidth:680,margin:"0 auto"}}>
+            <div style={{position:"absolute",left:19,top:0,bottom:0,width:1,background:"linear-gradient(180deg,#00d4e0,#6366f1,rgba(255,255,255,0.04))",zIndex:0}}/>
+            {TIMELINE.map((t,i)=>(
+              <div key={i} style={{display:"flex",gap:isMobile?16:24,marginBottom:isMobile?28:36,position:"relative",zIndex:1}}>
+                <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,#00c8d4,#1a6fcc)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:"0 0 0 4px rgba(0,200,212,0.12)"}}>
+                  <span style={{fontSize:13}}>✦</span>
+                </div>
+                <div style={{paddingTop:5}}>
+                  <span style={{fontSize:11,fontWeight:700,color:"#00d4e0",letterSpacing:1,textTransform:"uppercase"}}>{t.year}</span>
+                  <h4 style={{fontSize:isMobile?13:15,fontWeight:700,color:"#fff",margin:"4px 0 5px"}}>{t.title}</h4>
+                  <p style={{fontSize:isMobile?12:13,color:"rgba(255,255,255,0.4)",lineHeight:1.7,margin:0}}>{t.desc}</p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-3">Accurate Budget</h3>
-              <p className="text-gray-500 leading-relaxed">
-                Smart budget distribution for better planning — stay on track financially.
-              </p>
-            </div>
+            ))}
+          </div>
+        </section>
 
-            {/* Feature 3 */}
-            <div className="group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-indigo-100">
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-100 to-amber-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                <svg className="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+        {/* ── TEAM ── */}
+        <section style={{maxWidth:1100,margin:"0 auto",padding:`0 ${px} ${isMobile?"60px":"90px"}`}}>
+          <div style={{textAlign:"center",marginBottom:isMobile?32:48}}>
+            <Badge>👥 The Team</Badge>
+            <h2 style={{fontSize:`clamp(${isMobile?"1.5rem":"1.8rem"},4vw,2.6rem)`,fontWeight:900,margin:"20px 0 10px"}}>
+              People Behind Trevelly
+            </h2>
+            <p style={{fontSize:isMobile?12:14,color:"rgba(255,255,255,0.35)",maxWidth:420,margin:"0 auto"}}>
+              A small, passionate team obsessed with making travel planning effortless.
+            </p>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:teamCols,gap:isMobile?12:18}}>
+            {TEAM.map((m,i)=>(
+              <div key={i}
+                style={{
+                  padding: isMobile ? "22px 14px" : "28px 20px",
+                  borderRadius:20,textAlign:"center",
+                  background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",
+                  transition:"all .3s",cursor:"default",
+                }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=m.color+"44";e.currentTarget.style.transform="translateY(-5px)";}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.06)";e.currentTarget.style.transform="translateY(0)";}}>
+                <div style={{width:isMobile?52:62,height:isMobile?52:62,borderRadius:18,background:`linear-gradient(135deg,${m.color}22,${m.color}08)`,border:`1.5px solid ${m.color}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:isMobile?22:26,margin:"0 auto 12px"}}>
+                  {m.emoji}
+                </div>
+                <p style={{fontSize:isMobile?12:14,fontWeight:700,color:"#fff",margin:"0 0 4px"}}>{m.name}</p>
+                <p style={{fontSize:isMobile?10:12,color:"rgba(255,255,255,0.35)",margin:0}}>{m.role}</p>
               </div>
-              <h3 className="text-xl font-bold mb-3">Easy to Use</h3>
-              <p className="text-gray-500 leading-relaxed">
-                Simple interface designed for everyone — no learning curve required.
+            ))}
+          </div>
+        </section>
+
+        {/* ── CTA ── */}
+        <section style={{maxWidth:1100,margin:"0 auto",padding:`0 ${px} ${isMobile?"70px":"100px"}`}}>
+          <div style={{
+            borderRadius:isMobile?20:28,
+            background:"linear-gradient(135deg,rgba(0,180,210,0.1),rgba(99,102,241,0.08))",
+            border:"1px solid rgba(0,212,224,0.15)",
+            padding: isMobile ? "40px 24px" : isTablet ? "50px 40px" : "60px 48px",
+            textAlign:"center",
+            position:"relative",overflow:"hidden",
+          }}>
+            <div style={{position:"absolute",top:"-40%",left:"50%",transform:"translateX(-50%)",width:400,height:400,background:"radial-gradient(circle,rgba(0,212,224,0.07),transparent 65%)",pointerEvents:"none"}}/>
+            <div style={{position:"relative",zIndex:1}}>
+              <Badge>🚀 Get Started</Badge>
+              <h2 style={{fontSize:`clamp(${isMobile?"1.5rem":"1.8rem"},4vw,2.8rem)`,fontWeight:900,margin:"20px 0 12px",lineHeight:1.1}}>
+                Ready for a Stress-Free Trip?
+              </h2>
+              <p style={{fontSize:isMobile?13:15,color:"rgba(255,255,255,0.45)",maxWidth:480,margin:"0 auto 28px",lineHeight:1.7}}>
+                Join thousands of travelers who've already ditched the planning headache.
+                Your next adventure is three fields away.
               </p>
+              <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
+                <button style={{
+                  padding: isMobile ? "12px 24px" : "14px 32px",
+                  borderRadius:14,border:"none",
+                  background:"linear-gradient(135deg,#00c8d4,#1a6fcc)",
+                  color:"#fff",fontSize:isMobile?13:14,fontWeight:700,cursor:"pointer",
+                  boxShadow:"0 8px 32px rgba(0,180,210,0.35)",
+                  width: isMobile ? "100%" : "auto",
+                }}>
+                  Start Planning Now →
+                </button>
+                <button style={{
+                  padding: isMobile ? "12px 24px" : "14px 32px",
+                  borderRadius:14,border:"1px solid rgba(255,255,255,0.1)",
+                  background:"rgba(255,255,255,0.04)",
+                  color:"rgba(255,255,255,0.7)",fontSize:isMobile?13:14,fontWeight:600,cursor:"pointer",
+                  width: isMobile ? "100%" : "auto",
+                }}>
+                  Learn More
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* STATS SECTION */}
-      <section className="py-20 px-6 md:px-8 bg-indigo-600 text-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div>
-              <div className="text-5xl font-bold mb-2">10K+</div>
-              <div className="text-indigo-100">Trips Planned</div>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">500+</div>
-              <div className="text-indigo-100">Destinations</div>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">98%</div>
-              <div className="text-indigo-100">Satisfied Travelers</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA SECTION */}
-      <section className="py-20 px-6 md:px-8 bg-black text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/20 to-sky-900/20"></div>
-        <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Experience Stress-Free Travel?
-          </h2>
-          <p className="text-gray-300 text-lg mb-8 max-w-xl mx-auto">
-            Join thousands of travelers who have discovered the joy of AI-powered planning.
-          </p>
-          <button
-            onClick={() => navigate("/planner")}
-            className="bg-white text-black px-8 py-3 rounded-full font-semibold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
-          >
-            Start Planning Now
-            <svg className="w-5 h-5 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </section>
-
+      </div>
     </div>
   );
-};
-
-export default About;
+}

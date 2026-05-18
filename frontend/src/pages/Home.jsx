@@ -3,6 +3,8 @@ import { motion, useScroll, useTransform, useMotionValue, animate } from "framer
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Plane, Info, HelpCircle, User, Menu, X } from "lucide-react";
 import { generatePlan } from "../services/api";
+import AuthModal from "../components/AuthModal";
+import Navbar from "../components/Navbar";
 
 const steps = [
   {
@@ -94,13 +96,25 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchRef = useRef(null);
-
   const [formData, setFormData] = useState({ destination: "", budget: "", days: "" });
   const [errors, setErrors] = useState({});
+
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authType, setAuthType] = useState("login");
+
+  const [authUser, setAuthUser] = useState(() => {
+    const stored = localStorage.getItem("trevellyUser");
+    return stored ? JSON.parse(stored) : null;
+  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("trevellyUser");
+    setAuthUser(null);
   };
 
   const validateForm = () => {
@@ -125,11 +139,6 @@ const Home = () => {
       setLoading(false);
     }
   };
-
-  const navLinks = [
-    { name: "About", path: "/about", icon: Info },
-    { name: "Help", path: "/contact", icon: HelpCircle },
-  ];
 
   const sectionRef = useRef(null);
   const progress = useMotionValue(0);
@@ -170,72 +179,7 @@ const Home = () => {
           style={{ width: "45vw", height: "45vw", background: "radial-gradient(circle, rgba(5,30,80,0.40) 0%, transparent 65%)", transform: "translate(25%, 25%)" }} />
 
         {/* ---------- NAVBAR ---------- */}
-        <nav className="relative z-50 flex items-center justify-between px-6 sm:px-10 md:px-16 py-5">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 hover:scale-105 transition-transform">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, #00c8d4, #1a6fcc)" }}
-            >
-              <Plane size={16} color="white" />
-            </div>
-            <span className="text-white font-bold text-lg tracking-wide">Trevelly</span>
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {["Home", ...navLinks.map((l) => l.name)].map((name, i) => {
-              const link = navLinks.find((l) => l.name === name);
-              return link ? (
-                <Link
-                  key={name}
-                  to={link.path}
-                  className="text-sm font-medium transition-colors"
-                  style={{
-                    color:
-                      location.pathname === link.path ? "#fff" : "rgba(255,255,255,0.55)",
-                  }}
-                >
-                  {name}
-                </Link>
-              ) : (
-                <Link
-                  key={name}
-                  to="/"
-                  className="text-sm font-medium text-white"
-                >
-                  {name}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Auth buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <button
-              className="text-sm font-semibold text-white px-4 py-2 rounded-lg transition-all"
-
-            >
-              Sign Up
-            </button>
-            <button
-              className="text-sm font-semibold px-4 py-2 rounded-lg transition-all border"
-              style={{ color: "#00d4e0", borderColor: "#00d4e0" }}
-            >
-              Register
-            </button>
-          </div>
-
-          {/* Mobile icons */}
-          <div className="flex md:hidden items-center gap-3">
-            {navLinks.map((link) => (
-              <Link key={link.path} to={link.path} className="p-2 text-white rounded-lg" aria-label={link.name}>
-                <link.icon size={22} />
-              </Link>
-            ))}
-            <button className="p-2 text-white rounded-lg" aria-label="Login"><User size={22} /></button>
-          </div>
-        </nav>
+        <Navbar />
 
         {/* ── HERO CONTENT ── */}
         <div className="relative z-10 px-5 sm:px-10 md:px-16 pt-6 md:pt-10">
@@ -612,6 +556,13 @@ const Home = () => {
           </div>
         </div>
       </footer>
+
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        type={authType}
+        setAuthUser={setAuthUser}
+      />
 
     </div>
   );
