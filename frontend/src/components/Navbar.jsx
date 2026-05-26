@@ -46,7 +46,7 @@ export default function Navbar() {
     const checkUser = () => {
 
       const stored = localStorage.getItem(
-        "trevellyUser"
+        "govibeUser"
       );
 
       if (stored) {
@@ -73,7 +73,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("trevellyUser");
+    localStorage.removeItem("govibeUser");
     setAuthUser(null);
   };
 
@@ -145,7 +145,7 @@ export default function Navbar() {
                 letterSpacing: "-0.4px",
               }}
             >
-              Trevelly
+              GoVibe
             </span>
           </Link>
 

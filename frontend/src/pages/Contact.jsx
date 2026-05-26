@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import emailjs from "@emailjs/browser";
 
 function useWindowWidth() {
   const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
@@ -14,7 +15,7 @@ function useWindowWidth() {
 
 const FAQS = [
   { q: "How fast will you respond?", a: "We typically respond within a few hours — never more than 24. For urgent issues, try our live chat." },
-  { q: "Is Trevelly free to use?", a: "Yes. Core trip planning is completely free. No credit card, no hidden fees." },
+  { q: "Is GoVibe free to use?", a: "Yes. Core trip planning is completely free. No credit card, no hidden fees." },
   { q: "Can I request a custom destination?", a: "Absolutely — just mention it in your message and our team will manually build your plan." },
   { q: "Do you have a mobile app?", a: "A dedicated mobile app is in the works. For now, our web experience works great on all devices." },
 ];
@@ -66,19 +67,94 @@ export default function Contact() {
     return e;
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+
     const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    setStep("sending");
-    setTimeout(() => {
+
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
+
+    try {
+
+      setStep("sending");
+
+      await emailjs.send(
+
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID,
+
+        {
+          name: form.name,
+          email: form.email,
+          type: form.type,
+          message: form.message,
+        },
+
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY
+      );
+
       setStep("done");
-      setForm({ name: "", email: "", type: "General", message: "" });
+
+      setForm({
+        name: "",
+        email: "",
+        type: "General",
+        message: ""
+      });
+
       setCharCount(0);
-      setTimeout(() => setStep("idle"), 6000);
-    }, 1800);
+
+      setTimeout(() => {
+        setStep("idle");
+      }, 6000);
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Failed to send message");
+
+      setStep("idle");
+
+    }
   };
 
   const types = ["General", "Support", "Partnership", "Feedback"];
+
+  const handleEmail = () => {
+    window.location.href = "mailto:support@govibe.com";
+  };
+
+  const handlePhone = () => {
+    window.location.href = "tel:+919876543210";
+  };
+
+  const handleMap = () => {
+    window.open(
+      "https://maps.google.com/?q=Bangalore,India",
+      "_blank"
+    );
+  };
+
+  const socialLinks = {
+    Twitter: "#",
+    Instagram: "#",
+    LinkedIn: "#",
+    YouTube: "#",
+  };
+
+  const openSocial = (platform) => {
+    const link = socialLinks[platform];
+
+    if (link === "#") {
+      alert(`${platform} profile coming soon 🚀`);
+    } else {
+      window.open(link, "_blank");
+    }
+  };
 
   const inputStyle = (name) => ({
     width: "100%", boxSizing: "border-box",
@@ -90,10 +166,10 @@ export default function Contact() {
         ? "rgba(239,68,68,0.05)"
         : "rgba(255,255,255,0.03)",
     border: `1.5px solid ${activeField === name
-        ? "rgba(0,212,224,0.5)"
-        : errors[name]
-          ? "rgba(239,68,68,0.5)"
-          : "rgba(255,255,255,0.07)"
+      ? "rgba(0,212,224,0.5)"
+      : errors[name]
+        ? "rgba(239,68,68,0.5)"
+        : "rgba(255,255,255,0.07)"
       }`,
     color: "#fff", outline: "none",
     caretColor: "#00d4e0",
@@ -111,6 +187,91 @@ export default function Contact() {
 
       {/* ── NAV ── */}
       <Navbar />
+
+      {/* Success Toast */}
+
+      {step === "done" && (
+
+        <div
+          style={{
+            position: "fixed",
+            top: 30,
+            right: 20,
+            zIndex: 9999,
+
+            padding: "14px 18px",
+            minWidth: "300px",
+
+            borderRadius: 16,
+
+            background:
+              "rgba(10,20,35,0.92)",
+
+            backdropFilter:
+              "blur(18px)",
+
+            border:
+              "1px solid rgba(16,185,129,.3)",
+
+            boxShadow:
+              "0 10px 35px rgba(16,185,129,.15)",
+
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+
+            animation:
+              "slideToast .4s ease"
+          }}
+        >
+
+          <div
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: "50%",
+
+              background:
+                "rgba(16,185,129,.15)",
+
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+
+              fontSize: 20
+            }}
+          >
+            ✅
+          </div>
+
+          <div>
+
+            <p
+              style={{
+                margin: 0,
+                fontWeight: 700,
+                fontSize: 14,
+                color: "#10b981"
+              }}
+            >
+              Message sent successfully
+            </p>
+
+            <p
+              style={{
+                margin: "3px 0 0",
+                fontSize: 12,
+                color: "rgba(255,255,255,.55)"
+              }}
+            >
+              We'll get back to you soon
+            </p>
+
+          </div>
+
+        </div>
+
+      )}
 
       <div style={{ position: "relative", zIndex: 5 }}>
 
@@ -140,7 +301,10 @@ export default function Contact() {
               {/* stat row */}
               <div style={{ display: "flex", gap: isMobile ? 20 : 32, flexWrap: "wrap" }}>
                 {[{ v: "< 24h", l: "Response time" }, { v: "98%", l: "Satisfaction" }, { v: "Real", l: "Human support" }].map((s, i) => (
-                  <div key={i}>
+                  <div
+                    key={i}
+                    onClick={() => openSocial(s.platform)}
+                  >
                     <p style={{ fontSize: isMobile ? 18 : 22, fontWeight: 900, margin: "0 0 2px", background: "linear-gradient(135deg,#fff,rgba(255,255,255,0.6))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{s.v}</p>
                     <p style={{ fontSize: 11, color: "rgba(255,255,255,0.28)", margin: 0, fontWeight: 500 }}>{s.l}</p>
                   </div>
@@ -151,7 +315,7 @@ export default function Contact() {
               {!isMobile && (
                 <div style={{ display: "flex", gap: 10, marginTop: 32, flexWrap: "wrap" }}>
                   {[
-                    { icon: "📧", label: "support@trevelly.com", color: "#00d4e0" },
+                    { icon: "📧", label: "support@GoVibe.com", color: "#00d4e0" },
                     { icon: "📞", label: "+91 98765 43210", color: "#6366f1" },
                   ].map((c, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 99, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", fontSize: 12, color: "rgba(255,255,255,0.5)", cursor: "pointer", transition: "all .2s" }}
@@ -172,7 +336,7 @@ export default function Contact() {
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#00c8d4,#1a6fcc)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>✈️</div>
                     <div>
-                      <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 1px" }}>Trevelly Support</p>
+                      <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 1px" }}>GoVibe Support</p>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
                         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>Online now</span>
@@ -203,10 +367,39 @@ export default function Contact() {
                       <span key={d} style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "inline-block", animation: `bounce .9s ${d * 0.15}s infinite` }} />
                     ))}
                   </div>
+
+                  {/* WhatsApp Chat Button */}
+                  <button
+                    onClick={() => {
+                      const message =
+                        "Hi GoVibe 👋 I need help with my travel planning.";
+
+                      window.open(
+                        `https://wa.me/919004370475?text=${encodeURIComponent(message)}`,
+                        "_blank"
+                      );
+                    }}
+                    style={{
+                      marginTop: 18,
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: 12,
+                      border: "none",
+                      cursor: "pointer",
+                      background:
+                        "linear-gradient(135deg,#25D366,#128C7E)",
+                      color: "#fff",
+                      fontWeight: 700
+                    }}
+                  >
+                    WhatsApp Chat 💬
+                  </button>
                 </div>
                 {/* decorative glow behind card */}
                 <div style={{ position: "absolute", inset: "-20px", borderRadius: 40, background: "radial-gradient(circle,rgba(0,212,224,0.06),transparent 70%)", zIndex: -1, pointerEvents: "none" }} />
               </div>
+
+
             )}
           </div>
         </section>
@@ -226,15 +419,6 @@ export default function Contact() {
                   <h2 style={{ fontSize: isMobile ? 18 : 22, fontWeight: 800, margin: "0 0 6px" }}>Send a message</h2>
                   <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", margin: 0 }}>No bots. No templates. Just real humans who care.</p>
                 </div>
-
-                {/* success state */}
-                {step === "done" && (
-                  <div style={{ marginBottom: 24, padding: "20px", borderRadius: 16, background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.25)", textAlign: "center" }}>
-                    <div style={{ fontSize: 36, marginBottom: 8 }}>🎉</div>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: "#10b981", margin: "0 0 4px" }}>Message received!</p>
-                    <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", margin: 0 }}>We'll be in touch within 24 hours.</p>
-                  </div>
-                )}
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
 
@@ -317,11 +501,29 @@ export default function Contact() {
                 <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 16px" }}>📡 Reach Us</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {[
-                    { icon: "📧", label: "Email", value: "support@trevelly.com", color: "#00d4e0" },
-                    { icon: "📞", label: "Phone", value: "+91 98765 43210", color: "#6366f1" },
-                    { icon: "📍", label: "Office", value: "Bangalore, India", color: "#f59e0b" },
+                    {
+                      icon: "📧",
+                      label: "Email",
+                      value: "support@GoVibe.com",
+                      color: "#00d4e0",
+                      action: handleEmail
+                    },
+                    {
+                      icon: "📞",
+                      label: "Phone",
+                      value: "+91 98765 43210",
+                      color: "#6366f1",
+                      action: handlePhone
+                    },
+                    {
+                      icon: "📍",
+                      label: "Office",
+                      value: "Bangalore, India",
+                      color: "#f59e0b",
+                      action: handleMap
+                    }
                   ].map((c, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 13, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)", cursor: "pointer", transition: "all .2s" }}
+                    <div key={i} onClick={c.action} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 13, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)", cursor: "pointer", transition: "all .2s" }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = c.color + "44"; e.currentTarget.style.background = `${c.color}08`; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.background = "rgba(255,255,255,0.025)"; }}>
                       <div style={{ width: 36, height: 36, borderRadius: 11, background: `${c.color}15`, border: `1px solid ${c.color}28`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{c.icon}</div>
@@ -339,10 +541,10 @@ export default function Contact() {
                 <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 14px" }}>🌐 Social</p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}>
                   {[
-                    { platform: "Twitter", handle: "@trevelly_ai", emoji: "𝕏", color: "#00d4e0" },
-                    { platform: "Instagram", handle: "@trevelly", emoji: "📸", color: "#ec4899" },
-                    { platform: "LinkedIn", handle: "Trevelly", emoji: "in", color: "#6366f1" },
-                    { platform: "YouTube", handle: "Trevelly AI", emoji: "▶", color: "#f59e0b" },
+                    { platform: "Twitter", handle: "@GoVibe_ai", emoji: "𝕏", color: "#00d4e0" },
+                    { platform: "Instagram", handle: "@GoVibe", emoji: "📸", color: "#ec4899" },
+                    { platform: "LinkedIn", handle: "GoVibe", emoji: "in", color: "#6366f1" },
+                    { platform: "YouTube", handle: "GoVibe AI", emoji: "▶", color: "#f59e0b" },
                   ].map((s, i) => (
                     <div key={i} style={{ padding: "12px", borderRadius: 14, background: "rgba(255,255,255,0.025)", border: `1px solid rgba(255,255,255,0.06)`, cursor: "pointer", transition: "all .2s", textAlign: "center" }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = s.color + "44"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.background = `${s.color}0a`; }}
@@ -357,6 +559,88 @@ export default function Contact() {
 
             </div>
           </div>
+
+          {/* FAQ */}
+          <div
+            style={{
+              borderRadius: 20,
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              padding: "22px",
+              marginTop: "28px"
+            }}
+          >
+
+            <p
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: 1.2,
+                marginBottom: 14,
+                color: "rgba(255,255,255,0.3)"
+              }}
+            >
+              ❓ FAQ
+            </p>
+
+            {FAQS.map((f, i) => (
+
+              <div
+                key={i}
+                style={{
+                  padding: "12px 0",
+                  borderBottom: "1px solid rgba(255,255,255,0.05)"
+                }}
+              >
+
+                <div
+                  onClick={() =>
+                    setOpenFaq(
+                      openFaq === i ? null : i
+                    )
+                  }
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    cursor: "pointer"
+                  }}
+                >
+
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600
+                    }}
+                  >
+                    {f.q}
+                  </span>
+
+                  <span>
+                    {openFaq === i ? "−" : "+"}
+                  </span>
+
+                </div>
+
+                {openFaq === i && (
+
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: "rgba(255,255,255,.45)",
+                      marginTop: 10,
+                      lineHeight: 1.7
+                    }}
+                  >
+                    {f.a}
+                  </p>
+
+                )}
+
+              </div>
+
+            ))}
+
+          </div>
         </section>
       </div>
 
@@ -364,6 +648,22 @@ export default function Contact() {
         @keyframes spin   { to { transform: rotate(360deg); } }
         @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:.4} }
         @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+
+        @keyframes slideToast{
+          from{
+          opacity:0;
+          transform:
+          translateX(100px);
+          }
+
+          to{
+          opacity:1;
+          transform:
+          translateX(0);
+          }
+
+          }
       `}</style>
     </div>
   );

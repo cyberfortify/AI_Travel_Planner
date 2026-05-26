@@ -103,9 +103,15 @@ const Home = () => {
   const [authType, setAuthType] = useState("login");
 
   const [authUser, setAuthUser] = useState(() => {
-    const stored = localStorage.getItem("trevellyUser");
+    const stored = localStorage.getItem("govibeUser");
     return stored ? JSON.parse(stored) : null;
   });
+
+  useEffect(() => {
+    if (authUser) {
+      navigate("/planner");
+    }
+  }, [authUser]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -113,7 +119,7 @@ const Home = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("trevellyUser");
+    localStorage.removeItem("govibeUser");
     setAuthUser(null);
   };
 
@@ -163,6 +169,41 @@ const Home = () => {
 
   const bgOpacity = (i) =>
     useTransform(floatIdx, [i - 0.5, i, i + 0.5, i + 1], [0, 1, 1, 0]);
+
+
+  const handleExplorePlanner = () => {
+    const user = localStorage.getItem("govibeUser");
+
+    if (user) {
+      navigate("/planner");
+    } else {
+      setAuthType("login");
+      setAuthOpen(true);
+    }
+  };
+
+  const goToHowItWorks = () => {
+    window.scrollTo({
+      top: document.querySelector("section")?.offsetTop - 80,
+      behavior: "smooth"
+    });
+  };
+
+  const goToDestinations = () => {
+    sectionRef.current?.scrollIntoView({
+      behavior: "smooth"
+    });
+  };
+
+  const socialLinks = {
+    x: "https://twitter.com",
+    linkedin: "https://linkedin.com",
+    instagram: "https://instagram.com"
+  };
+
+  const openSocial = (url) => {
+    window.open(url, "_blank");
+  };
 
   return (
     <div className="text-gray-900 font-sans antialiased">
@@ -321,7 +362,7 @@ const Home = () => {
               </span>
             </h2>
             <p className="text-white/40 max-w-md mx-auto text-sm leading-relaxed">
-              From idea to itinerary — Trevelly makes trip planning feel effortless, fast, and fun.
+              From idea to itinerary — GoVibe makes trip planning feel effortless, fast, and fun.
             </p>
           </div>
 
@@ -401,9 +442,17 @@ const Home = () => {
                 ))}
               </div>
 
-              <button className="flex items-center gap-2 font-semibold text-white rounded-xl hover:scale-105 transition-transform mt-5"
-                style={{ padding: "12px 24px", background: "linear-gradient(135deg, #2563eb, #38bdf8)", boxShadow: "0 8px 28px rgba(37,99,235,0.4)", fontSize: 14 }}>
-                Explore <span style={{ fontSize: 16 }}>→</span>
+              <button
+                onClick={handleExplorePlanner}
+                className="flex items-center gap-2 font-semibold text-white rounded-xl hover:scale-105 transition-transform mt-5"
+                style={{
+                  padding: "12px 24px",
+                  background: "linear-gradient(135deg,#2563eb,#38bdf8)",
+                  boxShadow: "0 8px 28px rgba(37,99,235,0.4)",
+                  fontSize: 14
+                }}
+              >
+                Explore →
               </button>
             </div>
 
@@ -473,8 +522,18 @@ const Home = () => {
               Waiting For You
             </span>
           </h2>
-          <button className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl font-bold text-white text-base hover:scale-105 transition-all duration-300"
-            style={{ background: "linear-gradient(135deg, #00c8d4, #2563eb)", boxShadow: "0 12px 40px rgba(0,200,212,0.25)" }}>
+          <button
+            onClick={() => {
+              searchRef.current?.scrollIntoView({
+                behavior: "smooth"
+              })
+            }}
+            className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl font-bold text-white text-base hover:scale-105 transition-all duration-300"
+            style={{
+              background: "linear-gradient(135deg,#00c8d4,#2563eb)",
+              boxShadow: "0 12px 40px rgba(0,200,212,0.25)"
+            }}
+          >
             Plan My Trip →
           </button>
         </div>
@@ -501,53 +560,136 @@ const Home = () => {
               <div className="flex items-center gap-2.5 mb-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
                   style={{ background: "linear-gradient(135deg, #00c8d4, #2563eb)" }}>✈️</div>
-                <span className="text-white font-black text-xl tracking-wide">Trevelly</span>
+                <span className="text-white font-black text-xl tracking-wide">GoVibe</span>
               </div>
               <p className="text-white/35 text-sm leading-relaxed">
                 AI-powered travel planning that turns your dream destination into a detailed, budget-friendly itinerary in minutes.
               </p>
               <div className="flex items-center gap-3 mt-5">
-                {["𝕏", "in", "ig"].map(s => (
-                  <button key={s} className="w-9 h-9 rounded-lg flex items-center justify-center text-white/40 hover:text-white transition-all text-sm font-bold hover:scale-110"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>{s}</button>
+
+                {[
+                  { icon: "𝕏", url: socialLinks.x },
+                  { icon: "in", url: socialLinks.linkedin },
+                  { icon: "ig", url: socialLinks.instagram }
+
+                ].map((s, i) => (
+
+                  <button
+                    key={i}
+                    onClick={() => openSocial(s.url)}
+                    className="w-9 h-9 rounded-lg flex items-center justify-center text-white/40 hover:text-white transition-all text-sm font-bold hover:scale-110"
+                    style={{
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.08)"
+                    }}
+                  >
+
+                    {s.icon}
+
+                  </button>
+
                 ))}
+
               </div>
             </div>
 
             {/* Links — 2 col on mobile */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {[
-                { heading: "Product", links: ["How It Works", "Destinations", "Pricing", "Changelog"] },
-                { heading: "Company", links: ["About Us", "Blog", "Careers", "Contact"] },
-                { heading: "Legal", links: ["Privacy Policy", "Terms of Use", "Cookie Policy"] },
+                {
+                  heading: "Product",
+
+                  links: [
+                    {
+                      name: "How It Works",
+                      action: goToHowItWorks
+                    },
+
+                    {
+                      name: "Destinations",
+                      action: goToDestinations
+                    }
+                  ]
+                },
+
+                {
+                  heading: "Company",
+
+                  links: [
+                    {
+                      name: "About Us",
+                      path: "/about"
+                    },
+
+                    {
+                      name: "Contact",
+                      path: "/contact"
+                    }
+                  ]
+                },
+
+                {
+                  heading: "Legal",
+
+                  links: [
+                    {
+                      name: "Privacy Policy",
+                      path: "/about"
+                    },
+
+                    {
+                      name: "Terms of Use",
+                      path: "/about"
+                    },
+
+                    {
+                      name: "Cookie Policy",
+                      path: "/about"
+                    }
+                  ]
+                }
+
               ].map(col => (
                 <div key={col.heading}>
                   <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-3">{col.heading}</p>
                   <ul className="space-y-2.5">
-                    {col.links.map(l => (
-                      <li key={l}><a href="#" className="text-white/35 text-sm hover:text-white transition-colors duration-200">{l}</a></li>
+
+                    {col.links.map((l) => (
+
+                      <li key={l.name}>
+
+                        {l.path ? (
+
+                          <Link
+                            to={l.path}
+                            className="text-white/35 text-sm hover:text-white transition-colors duration-200"
+                          >
+                            {l.name}
+                          </Link>
+
+                        ) : (
+
+                          <button
+                            onClick={l.action}
+                            className="text-white/35 text-sm hover:text-white transition-colors duration-200"
+                          >
+                            {l.name}
+                          </button>
+
+                        )}
+
+                      </li>
+
                     ))}
+
                   </ul>
                 </div>
               ))}
             </div>
-
-            {/* Newsletter */}
-            <div className="max-w-xs">
-              <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-3">Stay Updated</p>
-              <p className="text-white/35 text-sm mb-4 leading-relaxed">Get travel tips and new destination drops in your inbox.</p>
-              <div className="flex gap-2">
-                <input type="email" placeholder="your@email.com"
-                  className="flex-1 px-3 py-2.5 rounded-xl text-sm text-white placeholder-white/20 outline-none"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }} />
-                <button className="px-4 py-2.5 rounded-xl text-white font-semibold text-sm hover:scale-105 transition-transform flex-shrink-0"
-                  style={{ background: "linear-gradient(135deg, #00c8d4, #2563eb)" }}>→</button>
-              </div>
-            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-6">
-            <p className="text-white/25 text-xs">© 2026 Trevelly. All rights reserved.</p>
+            <p className="text-white/25 text-xs">© 2026 GoVibe. All rights reserved.</p>
             <p className="text-white/20 text-xs">Made with ❤️ for travelers worldwide</p>
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
