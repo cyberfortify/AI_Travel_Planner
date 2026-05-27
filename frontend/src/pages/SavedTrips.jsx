@@ -17,7 +17,7 @@ import {
 export default function SavedTrips() {
 
     const user = JSON.parse(
-        localStorage.getItem("trevellyUser")
+        localStorage.getItem("govibeUser")
     );
 
     const [trips, setTrips] = useState([]);

@@ -5,6 +5,7 @@ import { Plane, Info, HelpCircle, User, Menu, X } from "lucide-react";
 import { generatePlan } from "../services/api";
 import AuthModal from "../components/AuthModal";
 import Navbar from "../components/Navbar";
+import logo from "../assets/logo.png";
 
 const steps = [
   {
@@ -557,10 +558,58 @@ const Home = () => {
 
             {/* Brand */}
             <div className="max-w-xs">
-              <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
-                  style={{ background: "linear-gradient(135deg, #00c8d4, #2563eb)" }}>✈️</div>
-                <span className="text-white font-black text-xl tracking-wide">GoVibe</span>
+              <div
+                className="flex items-center gap-3 mb-3"
+              >
+
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    flexShrink: 0
+                  }}
+                >
+
+                  <img
+                    src={logo}
+                    alt="GoVibe Logo"
+
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      display: "block"
+                    }}
+                  />
+
+                </div>
+
+                <span
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 800,
+
+                    background:
+                      "linear-gradient(90deg,#ffffff,#b9c7ff)",
+
+                    WebkitBackgroundClip: "text",
+
+                    WebkitTextFillColor:
+                      "transparent",
+
+                    letterSpacing: "-.5px"
+                  }}
+                >
+
+                  GoVibe
+
+                </span>
+
               </div>
               <p className="text-white/35 text-sm leading-relaxed">
                 AI-powered travel planning that turns your dream destination into a detailed, budget-friendly itinerary in minutes.

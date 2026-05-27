@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 const LoadingSpinner = ({ onDone }) => {
   const mountRef = useRef(null);
-
+  const [dots, setDots] = useState("");
   useEffect(() => {
     const mount = mountRef.current;
     const w = mount.clientWidth;
@@ -15,13 +15,18 @@ const LoadingSpinner = ({ onDone }) => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(w, h);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(
+      Math.min(
+        window.devicePixelRatio,
+        2
+      )
+    );
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     mount.appendChild(renderer.domElement);
 
     // Stars
     const starGeo = new THREE.BufferGeometry();
-    const starCount = 600;
+    const starCount = 350;
     const starPositions = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount * 3; i++) {
       starPositions[i] = (Math.random() - 0.5) * 200;
@@ -36,7 +41,14 @@ const LoadingSpinner = ({ onDone }) => {
     // Plane image
     let plane;
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load("/images/plane.png");
+    const texture = textureLoader.load("/images/plane.png", undefined, undefined, () => {
+      console.error(
+        "Plane image failed to load"
+      );
+
+    }
+
+    );
     const geometry = new THREE.PlaneGeometry(4, 4);
     const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     plane = new THREE.Mesh(geometry, material);
@@ -68,7 +80,7 @@ const LoadingSpinner = ({ onDone }) => {
         plane.material.opacity = t > 0.92 ? 1 - (t - 0.92) / 0.08 : 1;
 
         // When zoom is almost complete, trigger flash transition
-        if (t >= 0.9 && !doneCalled) {
+        if (t >= 1 && !doneCalled) {
           doneCalled = true;
           onDone?.();
         }
@@ -90,11 +102,62 @@ const LoadingSpinner = ({ onDone }) => {
     window.addEventListener("resize", onResize);
 
     return () => {
+
       cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", onResize);
+
+      window.removeEventListener(
+        "resize",
+        onResize
+      );
+
+      starGeo.dispose();
+
+      starMat.dispose();
+
+      geometry.dispose();
+
+      material.dispose();
+
+      texture.dispose();
+
       renderer.dispose();
-      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
+
+      if (
+        mount &&
+        mount.contains(
+          renderer.domElement
+        )
+      ) {
+
+        mount.removeChild(
+          renderer.domElement
+        );
+
+      }
+
     };
+  }, []);
+
+
+  useEffect(() => {
+
+    const interval =
+      setInterval(() => {
+
+        setDots(prev =>
+
+          prev.length >= 3
+            ? ""
+            : prev + "."
+
+        );
+
+      }, 500);
+
+    return () => clearInterval(
+      interval
+    );
+
   }, []);
 
   return (
@@ -122,7 +185,7 @@ const LoadingSpinner = ({ onDone }) => {
           color: "rgba(255,255,255,0.5)", fontSize: "12px",
           letterSpacing: "4px", textTransform: "uppercase", margin: 0,
         }}>
-          Fasten your seatbelt… your adventure is about to take off ✈️
+          Fasten your seatbelt{dots} your adventure is about to take off ✈️
         </p>
       </div>
     </div>

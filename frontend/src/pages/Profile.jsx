@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getSavedTrips } from "../services/api";
+import { getSavedTrips, deleteTrip } from "../services/api";
+import Navbar from "../components/Navbar";
 
 function useWindowWidth() {
   const [w, setW] = useState(
@@ -68,7 +69,7 @@ export default function Profile() {
     useState(false);
 
   const user = JSON.parse(
-    localStorage.getItem("trevellyUser")
+    localStorage.getItem("govibeUser")
   ) || {};
 
   const [savedTrips, setSavedTrips] =
@@ -100,7 +101,7 @@ export default function Profile() {
 
     loadTrips();
 
-  }, []);
+  }, [user?.email]);
 
   const initial =
     user?.name
@@ -113,7 +114,7 @@ export default function Profile() {
   const handleLogout = () => {
 
     localStorage.removeItem(
-      "trevellyUser"
+      "govibeUser"
     );
 
     window.dispatchEvent(
@@ -123,6 +124,45 @@ export default function Profile() {
     setShowLogoutConfirm(false);
 
     window.location.href = "/";
+  };
+
+  const handleDeleteTrip = async (
+    destination
+  ) => {
+
+    try {
+
+      await deleteTrip({
+        user_email: user.email,
+        destination
+      });
+
+      setSavedTrips(prev =>
+        prev.filter(
+          item =>
+            item.trip.destination !== destination
+        )
+      );
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  };
+
+
+  const handleViewTrip = trip => {
+
+    localStorage.setItem(
+      "selectedTrip",
+      JSON.stringify(trip)
+    );
+
+    window.location.href =
+      "/planner";
+
   };
 
   const RECENT_TRIPS =
@@ -150,6 +190,21 @@ export default function Profile() {
         color: "#00d4e0",
       };
     });
+
+
+  const progress = Math.min(
+    savedTrips.length * 20,
+    100
+  );
+
+  const travelerLevel =
+    savedTrips.length < 3
+      ? "Explorer"
+
+      : savedTrips.length < 8
+        ? "Traveler"
+
+        : "Globetrotter";
 
   const STATS = [
     {
@@ -228,97 +283,7 @@ export default function Profile() {
     >
 
       {/* NAVBAR */}
-      <nav
-        style={{
-          position: "relative",
-          zIndex: 20,
-          display: "flex",
-          alignItems: "center",
-          justifyContent:
-            "space-between",
-          padding: `20px ${px}`,
-          borderBottom:
-            "1px solid rgba(255,255,255,0.04)",
-        }}
-      >
-
-        {/* LOGO */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              background:
-                "linear-gradient(135deg,#00c8d4,#1a6fcc)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 16,
-            }}
-          >
-            ✈️
-          </div>
-
-          <span
-            style={{
-              fontWeight: 800,
-              fontSize: 18,
-            }}
-          >
-            Trevelly
-          </span>
-        </div>
-
-        {/* LINKS */}
-        {!isMobile && (
-          <div
-            style={{
-              display: "flex",
-              gap: 28,
-            }}
-          >
-            {NAV_LINKS.map(l => (
-              <Link
-                key={l.p}
-                to={l.p}
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color:
-                    "rgba(255,255,255,0.4)",
-                  textDecoration: "none",
-                }}
-              >
-                {l.n}
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* AVATAR */}
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 12,
-            background:
-              "linear-gradient(135deg,#00c8d4,#2563eb)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: 800,
-          }}
-        >
-          {initial}
-        </div>
-      </nav>
+      <Navbar />
 
       {/* MAIN */}
       <div
@@ -333,75 +298,117 @@ export default function Profile() {
         <div
           style={{
             borderRadius: 28,
-            background:
-              "rgba(255,255,255,0.03)",
+            background: ` linear-gradient(rgba(5,10,20,.72),rgba(5,10,20,.95)), url("https://images.pexels.com/photos/912050/pexels-photo-912050.jpeg")center/cover`,
+
             border:
               "1px solid rgba(255,255,255,0.07)",
+
             padding:
               isMobile
                 ? 24
                 : 36,
+
             marginBottom: 28,
+
+            overflow: "hidden"
           }}
         >
 
           <div
             style={{
               display: "flex",
-              justifyContent:
-                "space-between",
+              flexDirection:
+                isMobile
+                  ? "column"
+                  : "row",
+
+              justifyContent: "space-between",
+
               alignItems:
                 isMobile
-                  ? "flex-start"
+                  ? "center"
                   : "center",
-              gap: 20,
-              flexWrap: "wrap",
+
+              gap: isMobile ? 24 : 20
             }}
           >
 
             <div
               style={{
                 display: "flex",
+
+                flexDirection:
+                  isMobile
+                    ? "column"
+                    : "row",
+
                 alignItems: "center",
+
+                textAlign:
+                  isMobile
+                    ? "center"
+                    : "left",
+
                 gap: 20,
+
+                width: "100%"
               }}
             >
 
               {/* AVATAR */}
               <div
                 style={{
+                  position: "relative",
+
                   width:
-                    isMobile
-                      ? 76
-                      : 96,
+                    isMobile ? 88 : 110,
 
                   height:
-                    isMobile
-                      ? 76
-                      : 96,
+                    isMobile ? 88 : 110,
 
-                  borderRadius: 22,
+                  borderRadius: "50%",
+
+                  padding: 4,
 
                   background:
-                    "linear-gradient(135deg,#00c8d4,#2563eb)",
-
-                  display: "flex",
-
-                  alignItems: "center",
-
-                  justifyContent: "center",
-
-                  fontSize:
-                    isMobile
-                      ? 28
-                      : 34,
-
-                  fontWeight: 900,
-
-                  color: "#fff",
+                    "linear-gradient(135deg, #00d4e0, #2563eb, #8b5cf6)",
+                  boxShadow:
+                    "0 10px 40px rgba(0,212,224,.25)"
                 }}
               >
-                {initial}
+
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+
+                    borderRadius: "50%",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    background:
+                      "rgba(8,15,28,.95)",
+
+                    backdropFilter:
+                      "blur(20px)",
+
+                    fontSize:
+                      isMobile ? 30 : 40,
+
+                    fontWeight: 900,
+
+                    color: "#fff",
+
+                    overflow: "hidden"
+                  }}
+                >
+
+                  {initial}
+
+                </div>
+
               </div>
 
               {/* INFO */}
@@ -472,6 +479,73 @@ export default function Profile() {
                 >
                   Member since 2026
                 </p>
+
+                {/* PROGRESS */}
+                <div
+                  style={{
+                    marginTop: 18,
+                    width:
+                      isMobile
+                        ? "100%"
+                        : "300px"
+                  }}
+                >
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: 8
+                    }}
+                  >
+
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "rgba(255,255,255,.45)"
+                      }}
+                    >
+
+                      {travelerLevel}
+
+                    </span>
+
+                    <span
+                      style={{
+                        fontSize: 11,
+                        color: "#00d4e0"
+                      }}
+                    >
+
+                      {progress}%
+
+                    </span>
+
+                  </div>
+
+                  <div
+                    style={{
+                      height: 8,
+                      background:
+                        "rgba(255,255,255,.08)",
+                      borderRadius: 999,
+                      overflow: "hidden"
+                    }}
+                  >
+
+                    <div
+                      style={{
+                        width: `${progress}%`,
+                        height: "100%",
+
+                        background:
+                          "linear-gradient(90deg,#00d4e0,#2563eb)"
+                      }}
+                    />
+
+                  </div>
+
+                </div>
               </div>
             </div>
 
@@ -483,16 +557,32 @@ export default function Profile() {
                 )
               }
               style={{
-                padding:
-                  "12px 18px",
+
+                width:
+                  isMobile
+                    ? "100%"
+                    : "auto",
+
+                maxWidth:
+                  isMobile
+                    ? 220
+                    : "none",
+
+                padding: "12px 18px",
+
                 borderRadius: 14,
+
                 border:
                   "1px solid rgba(239,68,68,0.3)",
+
                 background:
                   "rgba(239,68,68,0.08)",
+
                 color: "#f87171",
+
                 fontWeight: 700,
-                cursor: "pointer",
+
+                cursor: "pointer"
               }}
             >
               Logout
@@ -689,111 +779,368 @@ export default function Profile() {
               )}
             </div>
           )}
-      </div>
 
-      {/* LOGOUT MODAL */}
-      {showLogoutConfirm && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background:
-              "rgba(0,0,0,0.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent:
-              "center",
-            zIndex: 100,
-          }}
-        >
+
+        {/* SAVED TRIPS */}
+        {activeTab === "trips" && (
 
           <div
             style={{
-              width: 340,
-              borderRadius: 24,
-              background: "#0d1a2d",
-              padding: 28,
-              border:
-                "1px solid rgba(255,255,255,0.08)",
+              display: "grid",
+              gridTemplateColumns:
+                isMobile
+                  ? "1fr"
+                  : "repeat(auto-fit,minmax(320px,1fr))",
+
+              gap: 20
             }}
           >
 
-            <h3
-              style={{
-                margin:
-                  "0 0 10px",
-              }}
-            >
-              Logout?
-            </h3>
+            {savedTrips.length === 0 ? (
 
-            <p
-              style={{
-                color:
-                  "rgba(255,255,255,0.45)",
-                fontSize: 13,
-                lineHeight: 1.6,
-              }}
-            >
-              You'll need to sign
-              in again to access
-              your trips.
-            </p>
+              <div
+                style={{
+                  padding: 40,
+                  textAlign: "center",
+                  borderRadius: 20,
+                  background:
+                    "rgba(255,255,255,.03)"
+                }}
+              >
+
+                No saved trips yet ✈️
+
+              </div>
+
+            ) : (
+
+              savedTrips.map((item, i) => {
+
+                const trip = item.trip;
+
+                const total =
+                  Object.values(
+                    trip.budget
+                  )
+                    .reduce((a, b) => a + b, 0);
+
+                return (
+
+                  <div
+                    key={i}
+
+                    style={{
+                      padding: 22,
+
+                      borderRadius: 24,
+
+                      background:
+                        "rgba(255,255,255,.03)",
+
+                      border:
+                        "1px solid rgba(255,255,255,.06)"
+                    }}
+                  >
+
+                    <p
+                      style={{
+                        fontSize: 11,
+                        color: "#00d4e0"
+                      }}
+                    >
+
+                      Saved Journey
+
+                    </p>
+
+                    <h3
+                      style={{
+                        margin: "10px 0"
+                      }}
+                    >
+
+                      🌍 {trip.destination}
+
+                    </h3>
+
+                    <p
+                      style={{
+                        fontSize: 13,
+                        color:
+                          "rgba(255,255,255,.45)"
+                      }}
+                    >
+
+                      {trip.itinerary.length}
+                      days •
+                      ₹{total.toLocaleString()}
+
+                    </p>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 10,
+                        marginTop: 20
+                      }}
+                    >
+
+                      <button
+
+                        onClick={() =>
+                          handleViewTrip(trip)
+                        }
+
+                        style={{
+                          flex: 1,
+                          padding: 12,
+                          border: "none",
+                          borderRadius: 12,
+
+                          background:
+                            "linear-gradient(135deg,#00c8d4,#2563eb)",
+
+                          color: "#fff",
+
+                          fontWeight: 700,
+
+                          cursor: "pointer"
+                        }}
+                      >
+
+                        View
+
+                      </button>
+
+                      <button
+
+                        onClick={() =>
+                          handleDeleteTrip(
+                            trip.destination
+                          )
+                        }
+
+                        style={{
+                          flex: 1,
+                          padding: 12,
+
+                          borderRadius: 12,
+
+                          border:
+                            "1px solid rgba(255, 80, 80, .2)",
+
+                          background:
+                            "rgba(255,80,80,.08)",
+
+                          color: "#ff8080",
+
+                          cursor: "pointer"
+                        }}
+                      >
+
+                        Delete
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )
+
+              })
+
+            )}
+
+          </div>
+
+        )}
+
+        {/* BADGES */}
+        {activeTab === "badges" && (
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                isMobile
+                  ? "1fr 1fr"
+                  : "repeat(3,1fr)",
+              gap: 16
+            }}
+          >
+
+            {BADGES.map((b, i) => (
+
+              <div
+                key={i}
+
+                style={{
+                  padding: 20,
+
+                  borderRadius: 20,
+
+                  background:
+                    "rgba(255,255,255,.03)",
+
+                  border:
+                    "1px solid rgba(255,255,255,.06)",
+
+                  opacity:
+                    b.earned
+                      ? 1
+                      : .35
+                }}
+              >
+
+                <div
+                  style={{
+                    fontSize: 34,
+                    marginBottom: 10
+                  }}
+                >
+                  {b.icon}
+                </div>
+
+                <h4
+                  style={{
+                    margin: "0 0 5px"
+                  }}
+                >
+                  {b.label}
+                </h4>
+
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 12,
+                    color:
+                      b.earned
+                        ? "#10b981"
+                        : "rgba(255,255,255,.4)"
+                  }}
+                >
+
+                  {b.earned
+                    ? "Unlocked"
+                    : "Locked"}
+
+                </p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
+      </div>
+
+      {/* LOGOUT MODAL */}
+      {
+        showLogoutConfirm && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background:
+                "rgba(0,0,0,0.7)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent:
+                "center",
+              zIndex: 100,
+            }}
+          >
 
             <div
               style={{
-                display: "flex",
-                gap: 10,
-                marginTop: 20,
+                width: 340,
+                borderRadius: 24,
+                background: "#0d1a2d",
+                padding: 28,
+                border:
+                  "1px solid rgba(255,255,255,0.08)",
               }}
             >
 
-              <button
-                onClick={() =>
-                  setShowLogoutConfirm(
-                    false
-                  )
-                }
+              <h3
                 style={{
-                  flex: 1,
-                  padding: 12,
-                  borderRadius: 12,
-                  border:
-                    "1px solid rgba(255,255,255,0.08)",
-                  background:
-                    "rgba(255,255,255,0.04)",
-                  color:
-                    "rgba(255,255,255,0.6)",
-                  cursor:
-                    "pointer",
+                  margin:
+                    "0 0 10px",
                 }}
               >
-                Cancel
-              </button>
+                Logout?
+              </h3>
 
-              <button
-                onClick={
-                  handleLogout
-                }
+              <p
                 style={{
-                  flex: 1,
-                  padding: 12,
-                  borderRadius: 12,
-                  border: "none",
-                  background:
-                    "rgba(239,68,68,0.12)",
-                  color: "#f87171",
-                  fontWeight: 700,
-                  cursor:
-                    "pointer",
+                  color:
+                    "rgba(255,255,255,0.45)",
+                  fontSize: 13,
+                  lineHeight: 1.6,
                 }}
               >
-                Logout
-              </button>
+                You'll need to sign
+                in again to access
+                your trips.
+              </p>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  marginTop: 20,
+                }}
+              >
+
+                <button
+                  onClick={() =>
+                    setShowLogoutConfirm(
+                      false
+                    )
+                  }
+                  style={{
+                    flex: 1,
+                    padding: 12,
+                    borderRadius: 12,
+                    border:
+                      "1px solid rgba(255,255,255,0.08)",
+                    background:
+                      "rgba(255,255,255,0.04)",
+                    color:
+                      "rgba(255,255,255,0.6)",
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={
+                    handleLogout
+                  }
+                  style={{
+                    flex: 1,
+                    padding: 12,
+                    borderRadius: 12,
+                    border: "none",
+                    background:
+                      "rgba(239,68,68,0.12)",
+                    color: "#f87171",
+                    fontWeight: 700,
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }

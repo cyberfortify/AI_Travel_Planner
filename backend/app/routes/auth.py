@@ -62,7 +62,12 @@ def signup(data: SignupRequest):
     db.refresh(new_user)
 
     return {
-        "message": "User created successfully"
+        "message":"User created successfully",
+        "user":{
+            "id":new_user.id,
+            "name":new_user.name,
+            "email":new_user.email
+        }
     }
 
 

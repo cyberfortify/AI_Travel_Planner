@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import jsPDF from "jspdf";
 import { generatePlan } from "../services/api";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import {
@@ -9,6 +10,7 @@ import {
 import AuthModal from "../components/AuthModal";
 import Navbar from "../components/Navbar";
 import { saveTrip } from "../services/api";
+import logo from "../assets/logo.png";
 
 const BUDGET_META = {
   accommodation: { icon: Hotel, color: "#6366f1", dim: "rgba(99,102,241,0.08)", border: "rgba(99,102,241,0.18)" },
@@ -93,6 +95,148 @@ export default function Planner() {
     }
   };
 
+  const handleExportPDF = () => {
+
+    if (!result) return;
+
+    const pdf = new jsPDF();
+
+    pdf.setFontSize(22);
+
+    pdf.text(
+      "GoVibe Travel Plan",
+      20,
+      20
+    );
+
+    pdf.setFontSize(13);
+
+    pdf.text(
+      `Destination: ${result.destination}`,
+      20,
+      40
+    );
+
+    pdf.text(
+      `Budget: ₹${totalBudget}`,
+      20,
+      50
+    );
+
+    pdf.text(
+      `Days: ${result.itinerary.length}`,
+      20,
+      60
+    );
+
+    let y = 80;
+
+    result.itinerary.forEach(day => {
+
+      pdf.setFontSize(14);
+
+      pdf.text(
+        `Day ${day.day}`,
+        20,
+        y
+      );
+
+      y += 10;
+
+      pdf.setFontSize(11);
+
+      pdf.text(
+        `Morning: ${day.morning}`,
+        20,
+        y
+      );
+
+      y += 10;
+
+      pdf.text(
+        `Afternoon: ${day.afternoon}`,
+        20,
+        y
+      );
+
+      y += 10;
+
+      pdf.text(
+        `Night: ${day.night}`,
+        20,
+        y
+      );
+
+      y += 18;
+
+      if (y > 260) {
+
+        pdf.addPage();
+
+        y = 20;
+
+      }
+
+    });
+
+    pdf.save(
+      `${result.destination}-trip.pdf`
+    );
+
+  };
+
+
+  const handleShareTrip = async () => {
+
+    try {
+
+      const shareText = `
+
+🌍 ${result.destination}
+
+${result.itinerary.length} Days
+
+Budget:
+₹${totalBudget}
+
+Planned with GoVibe ✈️
+
+`;
+
+      if (
+        navigator.share
+      ) {
+
+        await navigator.share({
+
+          title:
+            `${result.destination} Trip`,
+
+          text:
+            shareText
+
+        });
+
+      } else {
+
+        navigator.clipboard.writeText(
+          shareText
+        );
+
+        alert(
+          "Trip details copied!"
+        );
+
+      }
+
+    } catch (err) {
+
+      console.log(err);
+
+    }
+
+  };
+
   useEffect(() => {
 
     const storedUser =
@@ -130,6 +274,27 @@ export default function Planner() {
     }
 
   }, [result]);
+
+  useEffect(() => {
+
+    const trip =
+      JSON.parse(
+        localStorage.getItem(
+          "selectedTrip"
+        )
+      );
+
+    if (trip) {
+
+      setResult(trip);
+
+      localStorage.removeItem(
+        "selectedTrip"
+      );
+
+    }
+
+  }, []);
 
   const onChange = (e) => {
     setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -240,6 +405,48 @@ export default function Planner() {
       );
 
   }, []);
+
+
+  const buttonStyle = {
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    gap: 8,
+
+    width:
+      isMobile
+        ? 48
+        : "100%",
+
+    height:
+      isMobile
+        ? 48
+        : "auto",
+
+    padding:
+      isMobile
+        ? 0
+        : "12px 18px",
+
+    borderRadius:
+      isMobile
+        ? "50%"
+        : 14,
+
+    border:
+      "1px solid rgba(255,255,255,.08)",
+
+    background:
+      "rgba(255,255,255,.05)",
+
+    color: "#fff",
+
+    cursor: "pointer",
+
+    fontWeight: 700
+  };
 
 
   return (
@@ -451,9 +658,8 @@ export default function Planner() {
               style={{
                 display: "flex",
                 flexDirection: isMobile ? "column" : "row",
-                alignItems: isMobile ? "flex-start" : "flex-end",
                 justifyContent: "space-between",
-                gap: isMobile ? 28 : 16,
+                gap: isMobile ? 2 : 15,
                 marginBottom: 40,
                 paddingBottom: 28,
                 borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -605,87 +811,97 @@ export default function Planner() {
               {/* RIGHT ACTIONS */}
               <div
                 style={{
+
                   display: "flex",
+
+                  flexDirection:
+                    isMobile
+                      ? "row"
+                      : "column",
+
+                  alignItems: "center",
+
+                  justifyContent:
+                    "center",
+
                   gap: 12,
-                  width: isMobile ? "100%" : "220px",
-                  flexDirection: "column",
-                  alignSelf: isMobile ? "stretch" : "center"
+
+                  width:
+                    isMobile
+                      ? "100%"
+                      : "220px",
+
+                  padding:
+                    isMobile
+                      ? "10px"
+                      : "0",
+
+                  background:
+                    isMobile
+                      ? "rgba(255,255,255,.03)"
+                      : "transparent",
+
+                  border:
+                    isMobile
+                      ? "1px solid rgba(255,255,255,.06)"
+                      : "none",
+
+                  borderRadius:
+                    isMobile
+                      ? 18
+                      : 0,
+
+                  backdropFilter:
+                    "blur(16px)"
                 }}
               >
 
                 {/* PLAN NEW TRIP */}
                 <button
                   onClick={() => setResult(null)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "rgba(255,255,255,0.75)",
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 14,
-                    padding:
-                      isMobile
-                        ? "14px 18px"
-                        : "12px 18px",
-                    cursor: "pointer",
-                    transition: "all .25s ease",
-                    width: "100%",
-                    minHeight: 48,
-                    flexShrink: 0,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#fff";
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.09)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color =
-                      "rgba(255,255,255,0.75)";
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.05)";
-                  }}
+                  style={buttonStyle}
                 >
-                  <RotateCcw size={14} />
-                  Plan New Trip
+
+                  <RotateCcw size={16} />
+
+                  {!isMobile && "Plan New Trip"}
+
                 </button>
 
                 {/* SAVE BUTTON */}
                 <button
                   onClick={handleSaveTrip}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "#fff",
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 14,
-                    padding:
-                      isMobile
-                        ? "14px 18px"
-                        : "12px 18px",
-                    cursor: "pointer",
-                    transition: "all .25s ease",
-                    width: "100%",
-                    minHeight: 48,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.09)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background =
-                      "rgba(255,255,255,0.05)";
-                  }}
+                  style={buttonStyle}
                 >
-                  ❤️ Save Trip
+
+                  ❤️
+
+                  {!isMobile && "Save Trip"}
+
+                </button>
+
+                {/* PDF EXPORT */}
+                <button
+                  onClick={handleExportPDF}
+                  style={buttonStyle}
+                >
+
+                  📄
+
+                  {!isMobile && "Export PDF"}
+
+                </button>
+
+                {/* SHARE TRIP */}
+                <button
+                  onClick={handleShareTrip}
+                  style={buttonStyle}
+                >
+
+                  🔗
+
+                  {!isMobile && "Share Trip"}
+
                 </button>
 
               </div>
@@ -1545,22 +1761,56 @@ export default function Planner() {
 
               <div className="max-w-xs">
 
-                <div className="flex items-center gap-2.5 mb-3">
+                <div
+                  className="flex items-center gap-3 mb-3"
+                >
 
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
                     style={{
-                      background:
-                        "linear-gradient(135deg,#00c8d4,#2563eb)"
+                      width: 48,
+                      height: 48,
+
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+
+                      flexShrink: 0
                     }}
                   >
-                    ✈️
+
+                    <img
+                      src={logo}
+                      alt="GoVibe Logo"
+
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        display: "block"
+                      }}
+                    />
+
                   </div>
 
                   <span
-                    className="text-white font-black text-xl tracking-wide"
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 800,
+
+                      background:
+                        "linear-gradient(90deg,#ffffff,#b9c7ff)",
+
+                      WebkitBackgroundClip: "text",
+
+                      WebkitTextFillColor:
+                        "transparent",
+
+                      letterSpacing: "-.5px"
+                    }}
                   >
+
                     GoVibe
+
                   </span>
 
                 </div>

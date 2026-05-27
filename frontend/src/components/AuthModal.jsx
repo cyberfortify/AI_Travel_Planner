@@ -40,7 +40,7 @@ export default function AuthModal({
         const res = await registerUser(formData);
 
         localStorage.setItem(
-          "trevellyUser",
+          "govibeUser",
           JSON.stringify(res.user)
         );
 
@@ -58,7 +58,7 @@ export default function AuthModal({
         });
 
         localStorage.setItem(
-          "trevellyUser",
+          "govibeUser",
           JSON.stringify(res.user)
         );
 

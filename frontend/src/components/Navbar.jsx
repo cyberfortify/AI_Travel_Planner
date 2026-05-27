@@ -8,10 +8,9 @@ import {
   Menu,
   X,
 } from "lucide-react";
-
 import AuthModal from "./AuthModal";
 import { useNavigate } from "react-router-dom";
-
+import logo from "../assets/logo.png";
 
 const menuBtn = {
   width: "100%",
@@ -83,13 +82,41 @@ export default function Navbar() {
     { name: "Help", path: "/contact", icon: HelpCircle },
   ];
 
+  const [isMobile, setIsMobile] =
+    useState(
+      window.innerWidth < 768
+    );
+
+  useEffect(() => {
+
+    const handleResize = () => {
+
+      setIsMobile(
+        window.innerWidth < 768
+      );
+
+    };
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+
+  }, []);
+
   return (
     <>
       <nav
         className="relative top-0 left-0 w-full z-50"
         style={{
           padding:
-            window.innerWidth < 768
+            isMobile
               ? "14px 16px"
               : "18px 32px",
         }}
@@ -103,7 +130,7 @@ export default function Navbar() {
             alignItems: "center",
             justifyContent: "space-between",
             padding:
-              window.innerWidth < 768
+              isMobile
                 ? "0 16px"
                 : "0 24px",
             borderRadius: 24,
@@ -118,31 +145,56 @@ export default function Navbar() {
           {/* LOGO */}
           <Link
             to="/"
-            className="flex items-center gap-2 hover:scale-105 transition-transform"
+            className="flex items-center hover:scale-105 transition-transform"
           >
             <div
               style={{
-                width: 42,
-                height: 42,
-                borderRadius: 14,
+                width: isMobile ? 42 : 52,
+                height: isMobile ? 42 : 52,
+
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background:
-                  "linear-gradient(135deg,#00c8d4,#2563eb)",
-                boxShadow:
-                  "0 10px 30px rgba(0,200,212,0.35)",
+
+                flexShrink: 0,
+
+                marginRight: 10
               }}
             >
-              <Plane size={18} color="white" />
+
+              <img
+                src={logo}
+                alt="GoVibe Logo"
+
+                style={{
+                  width: "100%",
+                  height: "100%",
+
+                  objectFit: "contain",
+
+                  display: "block"
+                }}
+              />
+
             </div>
 
             <span
               style={{
-                color: "#fff",
+                fontSize: isMobile ? 20 : 22,
                 fontWeight: 800,
-                fontSize: 20,
-                letterSpacing: "-0.4px",
+
+                display: "flex",
+                alignItems: "center",
+
+                height: "100%",
+
+                background:
+                  "linear-gradient(90deg,#fff,#b9c7ff)",
+
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+
+                letterSpacing: "-.5px"
               }}
             >
               GoVibe
@@ -340,13 +392,6 @@ export default function Navbar() {
                         👤 Profile
                       </button>
 
-
-                      <button
-                        onClick={() => navigate("/saved-trips")}
-                        style={menuBtn}
-                      >
-                        ❤️ Saved Trips
-                      </button>
 
                       <button
                         onClick={handleLogout}

@@ -4,7 +4,7 @@ from app.services.itinerary_service import generate_itinerary
 from app.services.budget_service import calculate_budget
 from app.services.hotel_service import filter_hotels_by_budget, get_hotels
 from app.utils.logger import logger
-
+from app.data.destination_images import DESTINATION_IMAGES
 
 router = APIRouter()
 
@@ -20,6 +20,10 @@ def generate_plan(data: TravelRequest):
             budget["hotel"],
             data.destination
         )
+        destination_image = DESTINATION_IMAGES.get(
+            data.destination.lower(),
+            "https://placehold.co/1600x500?text=Travel"
+        )
         logger.info("Travel plan generated successfully for destination: %s", data.destination)
 
         return {
@@ -29,7 +33,8 @@ def generate_plan(data: TravelRequest):
                 "destination": data.destination,
                 "itinerary": itinerary,
                 "budget": budget,
-                "hotels": filtered_hotels
+                "hotels": filtered_hotels,
+                "destination_image": destination_image
             }
         }
 

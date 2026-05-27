@@ -1,26 +1,26 @@
 [
   {
-    "user_email": "abc@gmail.com",
+    "user_email": "abc123@gmail.com",
     "trip": {
       "destination": "Goa",
       "itinerary": [
         {
           "day": 1,
-          "morning": "Shopping at Anjuna Flea Market",
-          "afternoon": "Cafe hopping and beach photography",
-          "night": "Seafood dinner with live music",
-          "restaurant": "Curlies Beach Shack",
-          "travel_time": "25 mins",
-          "weather": "Cloudy"
-        },
-        {
-          "day": 2,
           "morning": "Visit Fort Aguada and explore the lighthouse",
           "afternoon": "Relax at Candolim Beach",
           "night": "Dinner cruise on Mandovi River",
           "restaurant": "Fisherman\u2019s Wharf",
           "travel_time": "35 mins",
           "weather": "Pleasant"
+        },
+        {
+          "day": 2,
+          "morning": "Enjoy breakfast at a beach cafe near Baga Beach",
+          "afternoon": "Relax at Baga Beach and enjoy water sports",
+          "night": "Experience Goa nightlife at Tito\u2019s Lane",
+          "restaurant": "Britto\u2019s Goa",
+          "travel_time": "20 mins",
+          "weather": "Sunny"
         },
         {
           "day": 3,
@@ -30,6 +30,42 @@
           "restaurant": "Thalassa Goa",
           "travel_time": "30 mins",
           "weather": "Warm"
+        },
+        {
+          "day": 4,
+          "morning": "Shopping at Anjuna Flea Market",
+          "afternoon": "Cafe hopping and beach photography",
+          "night": "Seafood dinner with live music",
+          "restaurant": "Curlies Beach Shack",
+          "travel_time": "25 mins",
+          "weather": "Cloudy"
+        },
+        {
+          "day": 5,
+          "morning": "Visit Old Goa churches",
+          "afternoon": "Explore Panjim streets and cafes",
+          "night": "Beachside dinner and live music",
+          "restaurant": "Thalassa Goa",
+          "travel_time": "30 mins",
+          "weather": "Warm"
+        },
+        {
+          "day": 6,
+          "morning": "Visit Fort Aguada and explore the lighthouse",
+          "afternoon": "Relax at Candolim Beach",
+          "night": "Dinner cruise on Mandovi River",
+          "restaurant": "Fisherman\u2019s Wharf",
+          "travel_time": "35 mins",
+          "weather": "Pleasant"
+        },
+        {
+          "day": 7,
+          "morning": "Shopping at Anjuna Flea Market",
+          "afternoon": "Cafe hopping and beach photography",
+          "night": "Seafood dinner with live music",
+          "restaurant": "Curlies Beach Shack",
+          "travel_time": "25 mins",
+          "weather": "Cloudy"
         }
       ],
       "budget": {
@@ -119,130 +155,8 @@
           ],
           "description": "Affordable stay located near major tourist attractions."
         }
-      ]
-    }
-  },
-  {
-    "user_email": "abc@gmail.com",
-    "trip": {
-      "destination": "Goa",
-      "itinerary": [
-        {
-          "day": 1,
-          "morning": "Shopping at Anjuna Flea Market",
-          "afternoon": "Cafe hopping and beach photography",
-          "night": "Seafood dinner with live music",
-          "restaurant": "Curlies Beach Shack",
-          "travel_time": "25 mins",
-          "weather": "Cloudy"
-        },
-        {
-          "day": 2,
-          "morning": "Visit Fort Aguada and explore the lighthouse",
-          "afternoon": "Relax at Candolim Beach",
-          "night": "Dinner cruise on Mandovi River",
-          "restaurant": "Fisherman\u2019s Wharf",
-          "travel_time": "35 mins",
-          "weather": "Pleasant"
-        },
-        {
-          "day": 3,
-          "morning": "Visit Old Goa churches",
-          "afternoon": "Explore Panjim streets and cafes",
-          "night": "Beachside dinner and live music",
-          "restaurant": "Thalassa Goa",
-          "travel_time": "30 mins",
-          "weather": "Warm"
-        }
       ],
-      "budget": {
-        "travel": 16000,
-        "hotel": 12000,
-        "food": 8000,
-        "misc": 4000
-      },
-      "hotels": [
-        {
-          "id": 1,
-          "name": "Ocean Hotel",
-          "location": "Goa",
-          "price": 5543,
-          "rating": 4.8,
-          "type": "Luxury",
-          "image": "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8",
-          "amenities": [
-            "Restaurant",
-            "Mountain View",
-            "Beach Access",
-            "Ocean View"
-          ],
-          "description": "Elegant hotel with spacious rooms and scenic views."
-        },
-        {
-          "id": 2,
-          "name": "Palm Resort",
-          "location": "Goa",
-          "price": 2126,
-          "rating": 3.8,
-          "type": "Budget",
-          "image": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-          "amenities": [
-            "Bonfire",
-            "Breakfast",
-            "Mountain View",
-            "Free WiFi"
-          ],
-          "description": "Elegant hotel with spacious rooms and scenic views."
-        },
-        {
-          "id": 3,
-          "name": "Sea Suites",
-          "location": "Goa",
-          "price": 8930,
-          "rating": 4.7,
-          "type": "Luxury",
-          "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
-          "amenities": [
-            "Restaurant",
-            "Parking",
-            "Gym",
-            "Bonfire"
-          ],
-          "description": "Elegant hotel with spacious rooms and scenic views."
-        },
-        {
-          "id": 4,
-          "name": "Ocean Suites",
-          "location": "Goa",
-          "price": 6531,
-          "rating": 4.5,
-          "type": "Luxury",
-          "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-          "amenities": [
-            "Pool",
-            "Rooftop Pool",
-            "Bonfire",
-            "Airport Shuttle"
-          ],
-          "description": "Elegant hotel with spacious rooms and scenic views."
-        },
-        {
-          "id": 5,
-          "name": "Sea Hotel",
-          "location": "Goa",
-          "price": 4495,
-          "rating": 4.4,
-          "type": "Standard",
-          "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
-          "amenities": [
-            "AC Rooms",
-            "Free WiFi",
-            "Spa",
-            "Fine Dining"
-          ],
-          "description": "Affordable stay located near major tourist attractions."
-        }
-      ]
+      "destination_image": "https://images.pexels.com/photos/753626/pexels-photo-753626.jpeg"
     }
   }
 ]

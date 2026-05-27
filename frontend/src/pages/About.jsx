@@ -67,7 +67,7 @@ const STATS = [
 ];
 
 const TEAM = [
-  { name: "Aditya Sharma", role: "Founder & CEO", emoji: "👨‍💼", color: "#00d4e0" },
+  { name: "Ansh Sharma", role: "Founder & CEO", emoji: "👨‍💼", color: "#00d4e0" },
   { name: "Priya Mehta", role: "Head of AI", emoji: "👩‍💻", color: "#6366f1" },
   { name: "Rahul Verma", role: "Lead Designer", emoji: "🎨", color: "#f59e0b" },
   { name: "Sneha Pillai", role: "Travel Curator", emoji: "🌏", color: "#10b981" },
