@@ -11,3 +11,4 @@ frontend Setup:
 2. npm install three @react-three/fiber @react-three/drei
 3. npm install framer-motion
 4. npm install jspdf html2canvas
+5. npm install react-leaflet leaflet

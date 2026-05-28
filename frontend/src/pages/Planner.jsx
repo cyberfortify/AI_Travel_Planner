@@ -21,18 +21,19 @@ import TravelPersonality from "../components/planner/TravelPersonality";
 import TripActions from "../components/planner/TripActions";
 import BudgetPanel from "../components/planner/BudgetPanel";
 import HotelSection from "../components/planner/HotelSection";
-import {
-  glassCard,
-  sectionLabel,
-  sectionTitle,
-  mutedText,
-} from "../styles/plannerStyles";
 import AuthModal from "../components/AuthModal";
 import Navbar from "../components/Navbar";
 import { saveTrip } from "../services/api";
 import logo from "../assets/logo.png";
 import HotelCard from "../components/HotelCard";
 import HotelModal from "../components/HotelModal";
+import {
+  personalizeHotels,
+  personalizeItinerary,
+} from "../utils/travelPersonalization";
+import TripMapSection
+  from "../components/planner/TripMapSection";
+
 
 const BUDGET_META = {
   accommodation: {
@@ -103,7 +104,6 @@ export default function Planner() {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDay, setActiveDay] = useState(0);
 
   const [authOpen, setAuthOpen] = useState(false);
@@ -464,6 +464,19 @@ export default function Planner() {
     }
   }, []);
 
+  // PERSONALIZATION
+  const personalizedHotels =
+    personalizeHotels(
+      result?.hotels,
+      travelStyle
+    );
+
+  const personalizedItinerary =
+    personalizeItinerary(
+      result?.itinerary,
+      travelStyle
+    );
+
   return (
     <div
       style={{
@@ -616,9 +629,9 @@ export default function Planner() {
                       (e.target.style.border = "1px solid rgba(0,212,224,0.45)")
                     }
                     onBlur={(e) =>
-                      (e.target.style.border = inputStyle(
-                        errors.destination,
-                      ).border)
+                    (e.target.style.border = inputStyle(
+                      errors.destination,
+                    ).border)
                     }
                   />
                   {errors.destination && (
@@ -941,7 +954,11 @@ export default function Planner() {
 
             {/* ── Hero bar ── */}
             <PlannerHero
-              result={result}
+              result={{
+                ...result,
+                itinerary:
+                  personalizedItinerary,
+              }}
               formData={formData}
               destinationImage={destinationImage}
               isMobile={isMobile}
@@ -952,9 +969,20 @@ export default function Planner() {
               handleShareTrip={handleShareTrip}
             />
 
+            <TravelPersonality
+              travelStyle={travelStyle}
+              setTravelStyle={setTravelStyle}
+              isMobile={isMobile}
+            />
+
+
             {/* SMART ITINERARY LAYOUT */}
             <ItinerarySection
-              result={result}
+              result={{
+                ...result,
+                itinerary:
+                  personalizedItinerary,
+              }}
               activeDay={activeDay}
               setActiveDay={setActiveDay}
               isMobile={isMobile}
@@ -962,7 +990,11 @@ export default function Planner() {
 
             {/* Hotels */}
             <HotelSection
-              result={result}
+              result={{
+                ...result,
+                hotels:
+                  personalizedHotels,
+              }}
               isMobile={isMobile}
               hotelLoading={hotelLoading}
               selectedHotel={selectedHotel}
@@ -977,6 +1009,15 @@ export default function Planner() {
               isMobile={isMobile}
               onLike={handleLikeHotel}
               liked={likedHotels.some((h) => h.name === selectedHotel?.name)}
+            />
+
+            <TripMapSection
+              result={{
+                ...result,
+                hotels:
+                  personalizedHotels,
+              }}
+              isMobile={isMobile}
             />
 
             <style>{`

@@ -283,6 +283,35 @@ export default function ItinerarySection({
 
                 </div>
 
+                {item.aiNote && (
+
+                  <div
+                    style={{
+                      marginBottom: 18,
+
+                      padding: "14px 16px",
+
+                      borderRadius: 16,
+
+                      background:
+                        "rgba(0,212,224,0.08)",
+
+                      border:
+                        "1px solid rgba(0,212,224,0.18)",
+
+                      color: "#b6f7fb",
+
+                      fontSize: 13,
+
+                      lineHeight: 1.6,
+
+                      fontWeight: 500,
+                    }}
+                  >
+                    {item.aiNote}
+                  </div>
+                )}
+
                 {/* MORNING */}
                 <TimelineCard
                   title="🌅 Morning"
@@ -447,10 +476,9 @@ export default function ItinerarySection({
                           : "rgba(255,255,255,0.04)",
 
                       border:
-                        `1px solid ${
-                          active
-                            ? accent
-                            : "rgba(255,255,255,0.05)"
+                        `1px solid ${active
+                          ? accent
+                          : "rgba(255,255,255,0.05)"
                         }`,
 
                       transition:

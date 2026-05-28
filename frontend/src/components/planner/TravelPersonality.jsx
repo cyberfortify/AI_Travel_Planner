@@ -108,9 +108,19 @@ export default function TravelPersonality({
       {/* STYLE CHIPS */}
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 14,
+
+          display: "grid",
+
+          gridTemplateColumns:
+
+            isMobile
+              ? "1fr 1fr"
+              : "repeat(auto-fit,minmax(180px,1fr))",
+
+          gap:
+            isMobile
+              ? 10
+              : 14,
         }}
       >
 
@@ -131,12 +141,18 @@ export default function TravelPersonality({
               style={{
 
                 display: "flex",
-                alignItems: "center",
+                width: "100%",
+                alignItems:
+
+                  isMobile
+                    ? "flex-start"
+                    : "center",
                 gap: 10,
 
                 padding:
+
                   isMobile
-                    ? "12px 16px"
+                    ? "14px"
                     : "14px 18px",
 
                 borderRadius: 18,
@@ -183,7 +199,10 @@ export default function TravelPersonality({
                 <p
                   style={{
                     margin: 0,
-                    fontSize: 14,
+                    fontSize:
+                      isMobile
+                        ? 13
+                        : 14,
                     fontWeight: 700,
                   }}
                 >
