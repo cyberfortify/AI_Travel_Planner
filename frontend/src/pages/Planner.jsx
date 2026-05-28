@@ -11,6 +11,8 @@ import AuthModal from "../components/AuthModal";
 import Navbar from "../components/Navbar";
 import { saveTrip } from "../services/api";
 import logo from "../assets/logo.png";
+import HotelCard from "../components/HotelCard";
+import HotelModal from "../components/HotelModal";
 
 const BUDGET_META = {
   accommodation: { icon: Hotel, color: "#6366f1", dim: "rgba(99,102,241,0.08)", border: "rgba(99,102,241,0.18)" },
@@ -34,6 +36,8 @@ export default function Planner() {
   const initRes = location.state?.result || null;
   const initData = location.state?.formData || {};
   const [saveMessage, setSaveMessage] = useState("");
+  const [selectedHotel, setSelectedHotel] = useState(null);
+  const [pendingHotelLike, setPendingHotelLike] = useState(null);
 
   const [result, setResult] = useState(initRes);
   const [formData, setFormData] = useState({ destination: initData.destination || "", budget: initData.budget || "", days: initData.days || "" });
@@ -53,6 +57,7 @@ export default function Planner() {
   const [pendingSave, setPendingSave] = useState(false);
 
   const [hotelLoading, setHotelLoading] = useState(true);
+  const [likedHotels, setLikedHotels] = useState([]);
 
   const handleSaveTrip = async () => {
 
@@ -192,16 +197,16 @@ export default function Planner() {
 
       const shareText = `
 
-🌍 ${result.destination}
+        🌍 ${result.destination}
 
-${result.itinerary.length} Days
+        ${result.itinerary.length} Days
 
-Budget:
-₹${totalBudget}
+        Budget:
+        ₹${totalBudget}
 
-Planned with GoVibe ✈️
+        Planned with GoVibe ✈️
 
-`;
+        `;
 
       if (
         navigator.share
@@ -244,16 +249,60 @@ Planned with GoVibe ✈️
         "govibeUser"
       );
 
+    // SAVE TRIP FLOW
     if (
       pendingSave &&
       storedUser &&
       result
     ) {
+
       setPendingSave(false);
+
       handleSaveTrip();
     }
+
+    // HOTEL LIKE FLOW
+    if (
+      pendingHotelLike &&
+      storedUser
+    ) {
+
+      // REOPEN HOTEL
+      setSelectedHotel(
+        pendingHotelLike
+      );
+
+      // AUTO LIKE
+      setLikedHotels(prev => {
+
+        const exists = prev.some(
+          h =>
+            h.name ===
+            pendingHotelLike.name
+        );
+
+        if (exists) return prev;
+
+        const updated = [
+          ...prev,
+          pendingHotelLike
+        ];
+
+        localStorage.setItem(
+          "govibeLikedHotels",
+          JSON.stringify(updated)
+        );
+
+        return updated;
+      });
+
+      // CLEAR PENDING
+      setPendingHotelLike(null);
+    }
+
   }, [
     pendingSave,
+    pendingHotelLike,
     result
   ]);
 
@@ -447,6 +496,72 @@ Planned with GoVibe ✈️
 
     fontWeight: 700
   };
+
+
+  const handleLikeHotel = () => {
+
+    const storedUser =
+      localStorage.getItem("govibeUser");
+
+    if (!storedUser) {
+
+      // REMEMBER HOTEL
+      setPendingHotelLike(selectedHotel);
+
+      // CLOSE HOTEL MODAL
+      setSelectedHotel(null);
+
+      // OPEN LOGIN
+      setAuthType("login");
+      setAuthOpen(true);
+
+      return;
+    }
+
+    // NO HOTEL SELECTED
+    if (!selectedHotel) return;
+
+    const exists = likedHotels.some(
+      h => h.name === selectedHotel.name
+    );
+
+    let updated;
+
+    if (exists) {
+
+      updated = likedHotels.filter(
+        h => h.name !== selectedHotel.name
+      );
+
+    } else {
+
+      updated = [
+        ...likedHotels,
+        selectedHotel
+      ];
+    }
+
+    setLikedHotels(updated);
+
+    localStorage.setItem(
+      "govibeLikedHotels",
+      JSON.stringify(updated)
+    );
+  };
+
+
+  useEffect(() => {
+
+    const stored =
+      localStorage.getItem(
+        "govibeLikedHotels"
+      );
+
+    if (stored) {
+      setLikedHotels(JSON.parse(stored));
+    }
+
+  }, []);
 
 
   return (
@@ -1630,75 +1745,28 @@ Planned with GoVibe ✈️
                 ) : (
 
                   result.hotels?.map((hotel, i) => (
-                    <div key={i}
-                      style={{ borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)", transition: "all .25s", cursor: "pointer" }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.background = "rgba(255,255,255,0.035)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
-                    >
-                      {/* Image */}
-                      {hotel.image && (
-                        <div style={{ height: isMobile ? 200 : 160, overflow: "hidden", position: "relative" }}>
-                          <img
-                            loading="lazy"
-                            src={hotel.image}
-                            alt={hotel.name}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover"
-                            }}
-                            onError={(e) => {
-                              e.target.src =
-                                "https://placehold.co/600x400?text=Hotel";
-                            }}
-                          />
-                          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(6,13,24,0.75), transparent)" }} />
-                          {hotel.type && (
-                            <span style={{
-                              position: "absolute", top: 10, left: 10, fontSize: 10, fontWeight: 700,
-                              padding: "3px 10px", borderRadius: 99, color: "#fff",
-                              background: hotel.type === "Luxury" ? "rgba(245,158,11,0.92)" : hotel.type === "Budget" ? "rgba(16,185,129,0.92)" : "rgba(99,102,241,0.92)"
-                            }}>{hotel.type}</span>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Info */}
-                      <div style={{ padding: "16px 18px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", margin: "0 0 3px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{hotel.name}</p>
-                            {hotel.location && (
-                              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.36)", margin: 0 }}>📍 {hotel.location}</p>
-                            )}
-                          </div>
-                          <div style={{ textAlign: "right", flexShrink: 0 }}>
-                            <p style={{ fontSize: 16, fontWeight: 800, color: "#fff", margin: "0 0 2px" }}>₹{(hotel.price || 0).toLocaleString()}</p>
-                            <p style={{ fontSize: 10, color: "rgba(255,255,255,0.28)", margin: 0 }}>/night</p>
-                          </div>
-                        </div>
-
-                        {/* Stars */}
-                        <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 12 }}>
-                          {[1, 2, 3, 4, 5].map(s => (
-                            <span key={s} style={{ fontSize: 12, color: s <= Math.round(hotel.rating || 4) ? "#facc15" : "rgba(255,255,255,0.12)" }}>★</span>
-                          ))}
-                          {hotel.rating && <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 4 }}>{hotel.rating}</span>}
-                        </div>
-
-                        {/* Amenities */}
-                        {hotel.amenities?.length > 0 && (
-                          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-                            {hotel.amenities.slice(0, 4).map((a, j) => (
-                              <span key={j} style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 6, padding: "3px 8px" }}>{a}</span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )))}
+                    <HotelCard
+                      key={i}
+                      hotel={hotel}
+                      isMobile={isMobile}
+                      onClick={setSelectedHotel}
+                    />
+                  ))
+                )}
               </div>
             </div>
+
+            <HotelModal
+              hotel={selectedHotel}
+              onClose={() => setSelectedHotel(null)}
+              isMobile={isMobile}
+              onLike={handleLikeHotel}
+              liked={
+                likedHotels.some(
+                  h => h.name === selectedHotel?.name
+                )
+              }
+            />
 
 
 
