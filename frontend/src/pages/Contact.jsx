@@ -50,6 +50,94 @@ export default function Contact() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [activeField, setActiveField] = useState(null);
+  const [chatInput, setChatInput] = useState("");
+  const chatContainerRef = useRef(null);
+  const chatEndRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Initial bot message
+  const [messages, setMessages] = useState([
+    {
+      type: "bot",
+      text: "Hi 👋 I'm GoVibe AI. Ask me anything about destinations, budgets, hotels, or travel planning."
+    }
+  ]);
+
+  // Simulate bot "typing" by showing a typing indicator for 1.5s before displaying the bot's response
+  const sendMessage = async () => {
+
+    if (!chatInput.trim()) return;
+
+    const userText = chatInput;
+
+    setMessages(prev => [
+      ...prev,
+      {
+        type: "user",
+        text: userText
+      }
+    ]);
+
+    setChatInput("");
+
+    setIsTyping(true);
+
+    try {
+
+      const response = await fetch(
+        "http://localhost:8000/chat",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            message: userText,
+          }),
+        }
+      );
+
+      const data =
+        await response.json();
+
+      setIsTyping(false);
+
+      setMessages(prev => [
+        ...prev,
+        {
+          type: "bot",
+          text: data.reply,
+        }
+      ]);
+
+    } catch {
+
+      setIsTyping(false);
+
+      setMessages(prev => [
+        ...prev,
+        {
+          type: "bot",
+          text:
+            "Sorry, I couldn't connect right now.",
+        }
+      ]);
+
+    }
+
+  };
+
+  // Scroll to bottom of chat when new message arrives
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -336,64 +424,280 @@ export default function Contact() {
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#00c8d4,#1a6fcc)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>✈️</div>
                     <div>
-                      <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 1px" }}>GoVibe Support</p>
+                      <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 1px" }}>GoVibe AI Travel Assistant</p>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                         <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
                         <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>Online now</span>
                       </div>
                     </div>
                   </div>
-                  {/* mock messages */}
-                  {[
-                    { who: "them", text: "Hi there! 👋 How can we help you today?", time: "Just now" },
-                    { who: "you", text: "I need help planning a trip to Goa next month.", time: "Just now" },
-                    { who: "them", text: "We'd love to help! Fill the form and we'll build a custom plan for you 🗺️", time: "Just now" },
-                  ].map((m, i) => (
-                    <div key={i} style={{ display: "flex", justifyContent: m.who === "you" ? "flex-end" : "flex-start", marginBottom: 12 }}>
-                      <div style={{
-                        maxWidth: "78%", padding: "10px 14px", borderRadius: m.who === "you" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                        background: m.who === "you" ? "linear-gradient(135deg,rgba(0,200,212,0.25),rgba(26,111,204,0.2))" : "rgba(255,255,255,0.05)",
-                        border: m.who === "you" ? "1px solid rgba(0,212,224,0.25)" : "1px solid rgba(255,255,255,0.06)",
-                        fontSize: 12, color: m.who === "you" ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.6)", lineHeight: 1.55,
-                      }}>
-                        {m.text}
-                        <p style={{ fontSize: 10, color: "rgba(255,255,255,0.2)", margin: "5px 0 0", textAlign: m.who === "you" ? "right" : "left" }}>{m.time}</p>
-                      </div>
+
+
+                  {/* ── Chatbot Messages ── */}
+                  <div style={{ marginTop: 0, paddingTop: 0 }}>
+
+                    {/* Chat window */}
+                    <div
+                      ref={chatContainerRef}
+                      style={{
+                        height: 230,
+                        overflowY: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 10,
+                        marginBottom: 14,
+                        paddingRight: 4,
+                        scrollbarWidth: "thin",
+                        scrollbarColor: "rgba(0,212,224,0.2) transparent",
+                      }}
+                    >
+                      {messages.map((msg, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            gap: 7,
+                            flexDirection: msg.type === "user" ? "row-reverse" : "row",
+                            animation: "fadeSlideIn 0.3s ease forwards",
+                          }}
+                        >
+                          {/* Avatar */}
+                          {msg.type === "bot" && (
+                            <div
+                              style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: "50%",
+                                background: "linear-gradient(135deg,#00c8d4,#1a6fcc)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 13,
+                                flexShrink: 0,
+                                boxShadow: "0 0 10px rgba(0,200,212,0.35)",
+                              }}
+                            >
+                              ✈️
+                            </div>
+                          )}
+                          {msg.type === "user" && (
+                            <div
+                              style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: "50%",
+                                background: "rgba(99,102,241,0.3)",
+                                border: "1.5px solid rgba(99,102,241,0.5)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: 12,
+                                flexShrink: 0,
+                              }}
+                            >
+                              👤
+                            </div>
+                          )}
+
+                          {/* Bubble */}
+                          <div
+                            style={{
+                              maxWidth: "75%",
+                              padding: "10px 14px",
+                              borderRadius:
+                                msg.type === "user"
+                                  ? "16px 4px 16px 16px"
+                                  : "4px 16px 16px 16px",
+                              background:
+                                msg.type === "user"
+                                  ? "linear-gradient(135deg,#00c8d4,#1a6fcc)"
+                                  : "rgba(255,255,255,0.06)",
+                              border:
+                                msg.type === "user"
+                                  ? "none"
+                                  : "1px solid rgba(255,255,255,0.08)",
+                              fontSize: 12,
+                              color: "#fff",
+                              lineHeight: 1.6,
+                              boxShadow:
+                                msg.type === "user"
+                                  ? "0 4px 14px rgba(0,180,210,0.25)"
+                                  : "0 2px 8px rgba(0,0,0,0.2)",
+                            }}
+                          >
+                            {msg.text}
+                          </div>
+                        </div>
+                      ))}
+
+                      {isTyping && (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: 28,
+                              height: 28,
+                              borderRadius: "50%",
+                              background:
+                                "linear-gradient(135deg,#00c8d4,#1a6fcc)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 13,
+                              flexShrink: 0,
+                            }}
+                          >
+                            ✈️
+                          </div>
+
+                          <div
+                            style={{
+                              padding: "10px 14px",
+                              borderRadius: "4px 16px 16px 16px",
+                              background: "rgba(255,255,255,0.06)",
+                              border:
+                                "1px solid rgba(255,255,255,0.08)",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: 4,
+                              }}
+                            >
+                              <span className="typing-dot"></span>
+                              <span className="typing-dot"></span>
+                              <span className="typing-dot"></span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div ref={chatEndRef} />
                     </div>
-                  ))}
-                  {/* typing dots */}
-                  <div style={{ display: "flex", gap: 4, padding: "10px 14px", borderRadius: "16px 16px 16px 4px", background: "rgba(255,255,255,0.04)", width: "fit-content" }}>
-                    {[0, 1, 2].map(d => (
-                      <span key={d} style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(255,255,255,0.25)", display: "inline-block", animation: `bounce .9s ${d * 0.15}s infinite` }} />
-                    ))}
+
+                    {/* Quick suggestion chips */}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 6,
+                        flexWrap: "wrap",
+                        marginBottom: 12,
+                      }}
+                    >
+                      {["✈️ Bali trip", "🏖️ Goa budget", "🌏 Thailand"].map((chip) => (
+                        <button
+                          key={chip}
+                          onClick={() => {
+                            setChatInput(chip.split(" ").slice(1).join(" "));
+                          }}
+                          style={{
+                            padding: "5px 11px",
+                            borderRadius: 99,
+                            fontSize: 10,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            border: "1px solid rgba(0,212,224,0.25)",
+                            background: "rgba(0,212,224,0.06)",
+                            color: "rgba(255,255,255,0.55)",
+                            transition: "all .2s",
+                            letterSpacing: 0.3,
+                          }}
+                          onMouseEnter={e => {
+                            e.currentTarget.style.background = "rgba(0,212,224,0.14)";
+                            e.currentTarget.style.color = "#00d4e0";
+                            e.currentTarget.style.borderColor = "rgba(0,212,224,0.5)";
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = "rgba(0,212,224,0.06)";
+                            e.currentTarget.style.color = "rgba(255,255,255,0.55)";
+                            e.currentTarget.style.borderColor = "rgba(0,212,224,0.25)";
+                          }}
+                        >
+                          {chip}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Input row */}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        alignItems: "center",
+                        padding: "8px 10px",
+                        borderRadius: 14,
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.09)",
+                        transition: "border-color .2s",
+                      }}
+                      onFocus={e => e.currentTarget.style.borderColor = "rgba(0,212,224,0.4)"}
+                      onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"}
+                    >
+                      <span style={{ fontSize: 14, opacity: 0.4 }}>💬</span>
+                      <input
+                        value={chatInput}
+                        onChange={e => setChatInput(e.target.value)}
+                        onKeyDown={e => e.key === "Enter" && sendMessage()}
+                        placeholder="Ask about travel…"
+                        style={{
+                          flex: 1,
+                          background: "transparent",
+                          border: "none",
+                          color: "#fff",
+                          outline: "none",
+                          fontSize: 12,
+                          caretColor: "#00d4e0",
+                          fontFamily: "inherit",
+                        }}
+                      />
+                      <button
+                        onClick={sendMessage}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 10,
+                          border: "none",
+                          cursor: "pointer",
+                          background: chatInput.trim()
+                            ? "linear-gradient(135deg,#00c8d4,#1a6fcc)"
+                            : "rgba(255,255,255,0.07)",
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 13,
+                          transition: "all .2s",
+                          flexShrink: 0,
+                          boxShadow: chatInput.trim()
+                            ? "0 4px 12px rgba(0,180,210,0.3)"
+                            : "none",
+                        }}
+                      >
+                        ➤
+                      </button>
+                    </div>
+
+                    {/* Powered-by line */}
+                    <p
+                      style={{
+                        fontSize: 10,
+                        color: "rgba(255,255,255,0.18)",
+                        textAlign: "center",
+                        margin: "10px 0 0",
+                        letterSpacing: 0.4,
+                      }}
+                    >
+                      ⚡ Powered by GoVibe AI
+                    </p>
                   </div>
 
-                  {/* WhatsApp Chat Button */}
-                  <button
-                    onClick={() => {
-                      const message =
-                        "Hi GoVibe 👋 I need help with my travel planning.";
-
-                      window.open(
-                        `https://wa.me/919004370475?text=${encodeURIComponent(message)}`,
-                        "_blank"
-                      );
-                    }}
-                    style={{
-                      marginTop: 18,
-                      width: "100%",
-                      padding: "12px",
-                      borderRadius: 12,
-                      border: "none",
-                      cursor: "pointer",
-                      background:
-                        "linear-gradient(135deg,#25D366,#128C7E)",
-                      color: "#fff",
-                      fontWeight: 700
-                    }}
-                  >
-                    WhatsApp Chat 💬
-                  </button>
                 </div>
                 {/* decorative glow behind card */}
                 <div style={{ position: "absolute", inset: "-20px", borderRadius: 40, background: "radial-gradient(circle,rgba(0,212,224,0.06),transparent 70%)", zIndex: -1, pointerEvents: "none" }} />
@@ -664,6 +968,39 @@ export default function Contact() {
           }
 
           }
+
+          @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+
+          .typing-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#00d4e0;
+  animation:typingBounce 1.2s infinite;
+}
+
+.typing-dot:nth-child(2){
+  animation-delay:.2s;
+}
+
+.typing-dot:nth-child(3){
+  animation-delay:.4s;
+}
+
+@keyframes typingBounce{
+  0%,80%,100%{
+    transform:translateY(0);
+    opacity:.4;
+  }
+
+  40%{
+    transform:translateY(-4px);
+    opacity:1;
+  }
+}
       `}</style>
     </div>
   );

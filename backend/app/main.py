@@ -9,6 +9,7 @@ from app.routes.trip import router as trip_router
 from app.database.database import engine
 from app.models.user_model import Base
 from app.routes.saved_trips import router as saved_trip_router
+from app.routes.chat import router as chat_router
 
 # CREATE DATABASE TABLES
 Base.metadata.create_all(bind=engine)
@@ -29,6 +30,7 @@ app.include_router(travel_router)
 app.include_router(auth_router)
 app.include_router(trip_router)
 app.include_router(saved_trip_router)
+app.include_router(chat_router)
 
 @app.get("/")
 def root():

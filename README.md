@@ -4,6 +4,8 @@ backend Setup:
 3. venv/scripts/activate
 4. pip install -r requirements.txt 
 5. python run.py
+6. pip install google-genai
+7. pip install python-dotenv
 
 
 frontend Setup:  

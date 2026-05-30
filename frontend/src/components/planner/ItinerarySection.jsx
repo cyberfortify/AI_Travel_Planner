@@ -1,4 +1,5 @@
 import BudgetPanel from "./BudgetPanel";
+import { motion } from "framer-motion";
 
 const DAY_ACCENT = [
   "#6366f1",
@@ -268,17 +269,17 @@ export default function ItinerarySection({
 
                       fontSize:
                         isMobile
-                          ? 20
-                          : 28,
+                          ? 22
+                          : 30,
 
-                      lineHeight: 1.3,
+                      lineHeight: 1.2,
 
                       fontWeight: 800,
 
                       margin: 0,
                     }}
                   >
-                    {item.morning}
+                    Day {item.day} Journey
                   </h2>
 
                 </div>
@@ -592,64 +593,130 @@ function TimelineCard({
 
   return (
 
-    <div
+    <motion.div
+
+      initial={{
+        opacity: 0,
+        y: 40,
+      }}
+
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+
+      transition={{
+        duration: 0.5,
+      }}
+
+      viewport={{
+        once: true,
+      }}
+
       style={{
-        background:
-          "rgba(255,255,255,0.03)",
+        position: "relative",
 
-        border:
-          "1px solid rgba(255,255,255,0.05)",
+        paddingLeft: 42,
 
-        borderRadius: 18,
+        paddingBottom: 30,
 
-        padding:
-          isMobile
-            ? 14
-            : 18,
-
-        marginBottom:
-          isMobile
-            ? 12
-            : 16,
+        marginBottom: 8,
       }}
     >
 
-      <p
+      {/* VERTICAL LINE */}
+      <div
         style={{
-          fontSize: 12,
-          fontWeight: 700,
-          color,
-          marginBottom: 10,
+          position: "absolute",
+
+          left: 11,
+
+          top: 0,
+
+          bottom: 0,
+
+          width: 2,
+
+          background:
+            "linear-gradient(to bottom, rgba(255,255,255,.12), transparent)",
+        }}
+      />
+
+      {/* GLOWING DOT */}
+      <div
+        style={{
+          position: "absolute",
+
+          left: 4,
+
+          top: 4,
+
+          width: 16,
+
+          height: 16,
+
+          borderRadius: "50%",
+
+          background: color,
+
+          boxShadow: `0 0 20px ${color}`,
+        }}
+      />
+
+      {/* CONTENT */}
+      <div
+        style={{
+          background: "rgba(255,255,255,0.03)",
+
+          border: "1px solid rgba(255,255,255,0.05)",
+
+          borderRadius: 18,
+
+          padding: isMobile ? 14 : 18,
+
+          backdropFilter: "blur(10px)",
         }}
       >
-        {title}
-      </p>
 
-      <p
-        style={{
-          color:
-            "rgba(255,255,255,0.72)",
+        {/* TITLE */}
+        <p
+          style={{
+            fontSize: 12,
 
-          fontSize:
-            isMobile
-              ? 13
-              : 14,
+            fontWeight: 700,
 
-          lineHeight: 1.7,
+            color,
 
-          margin: 0,
-        }}
-      >
-        {content}
-      </p>
+            marginBottom: 10,
 
-    </div>
+            letterSpacing: 0.5,
+          }}
+        >
+          {title}
+        </p>
+
+        {/* TEXT */}
+        <p
+          style={{
+            color: "rgba(255,255,255,0.72)",
+
+            fontSize: isMobile ? 13 : 14,
+
+            lineHeight: 1.8,
+
+            margin: 0,
+          }}
+        >
+          {content}
+        </p>
+
+      </div>
+
+    </motion.div>
   );
 }
 
-
 /* INFO CARD */
-
 function InfoCard({
 
   label,
