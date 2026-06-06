@@ -14,6 +14,12 @@ import {
   ChevronRight,
   RotateCcw,
   TrendingUp,
+  Plane,
+  CheckCircle,
+  Globe,
+  Briefcase,
+  Camera,
+  Heart
 } from "lucide-react";
 import PlannerHero from "../components/planner/PlannerHero";
 import ItinerarySection from "../components/planner/ItinerarySection";
@@ -146,7 +152,7 @@ export default function Planner() {
         trip_data: result,
       });
 
-      setSaveMessage("✅ Trip saved successfully!");
+      setSaveMessage(" Trip saved successfully!");
 
       setTimeout(() => {
         setSaveMessage("");
@@ -212,14 +218,14 @@ export default function Planner() {
     try {
       const shareText = `
 
-        🌍 ${result.destination}
+        Destination: ${result.destination}
 
         ${result.itinerary.length} Days
 
         Budget:
         ₹${totalBudget}
 
-        Planned with GoVibe ✈️
+        Planned with GoVibe AI
 
         `;
 
@@ -372,7 +378,7 @@ export default function Planner() {
 
   const openSocial = (url) => {
     if (url === "#") {
-      alert("Coming soon 🚀");
+      alert("Coming soon ");
       return;
     }
 
@@ -380,7 +386,7 @@ export default function Planner() {
   };
 
   const legalAction = (name) => {
-    alert(`${name} page coming soon 🚀`);
+    alert(`${name} page coming soon`);
   };
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -801,7 +807,20 @@ export default function Planner() {
                 color: "rgba(255,255,255,.35)",
               }}
             >
-              ✈️ Generate a trip to see itinerary
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "60px",
+                  textAlign: "center",
+                  color: "rgba(255,255,255,.35)",
+                }}
+              >
+                <Plane size={32} color="#00d4e0" />
+                <span>Generate a trip to see itinerary</span>
+              </div>
             </div>
           )}
 
@@ -948,6 +967,7 @@ export default function Planner() {
                   fontWeight: 700,
                 }}
               >
+                <CheckCircle size={18} />
                 {saveMessage}
               </div>
             )}
@@ -1123,9 +1143,18 @@ export default function Planner() {
 
                 <div className="flex items-center gap-3 mt-5">
                   {[
-                    { icon: "𝕏", url: socialLinks.x },
-                    { icon: "in", url: socialLinks.linkedin },
-                    { icon: "ig", url: socialLinks.instagram },
+                    {
+                      icon: Globe,
+                      url: socialLinks.x
+                    },
+                    {
+                      icon: Briefcase,
+                      url: socialLinks.linkedin
+                    },
+                    {
+                      icon: Camera,
+                      url: socialLinks.instagram
+                    }
                   ].map((s, i) => (
                     <button
                       key={i}
@@ -1136,7 +1165,7 @@ export default function Planner() {
                         border: "1px solid rgba(255,255,255,0.08)",
                       }}
                     >
-                      {s.icon}
+                      <s.icon size={16} />
                     </button>
                   ))}
                 </div>
@@ -1262,9 +1291,18 @@ pt-6"
                 © 2026 GoVibe. All rights reserved.
               </p>
 
-              <p className="text-white/20 text-xs">
-                Made with ❤️ for travelers worldwide
-              </p>
+              <div
+                className="text-white/20 text-xs"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <span>Made with</span>
+                <Heart size={12} />
+                <span>for travelers worldwide</span>
+              </div>
 
               <div className="flex items-center gap-1.5">
                 <span

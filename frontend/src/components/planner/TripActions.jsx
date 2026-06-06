@@ -1,5 +1,8 @@
 import {
-  RotateCcw
+  RotateCcw,
+  Heart,
+  FileText,
+  Share2,
 } from "lucide-react";
 
 export default function TripActions({
@@ -73,7 +76,7 @@ export default function TripActions({
         style={buttonStyle}
       >
 
-        <RotateCcw size={16} />
+        <RotateCcw size={16} color="#00d4e0" />
 
         {!isMobile && "Plan New Trip"}
 
@@ -84,11 +87,9 @@ export default function TripActions({
         onClick={handleSaveTrip}
         style={buttonStyle}
       >
-
-        ❤️
+        <Heart size={16} color="#ec4899" />
 
         {!isMobile && "Save Trip"}
-
       </button>
 
       {/* PDF */}
@@ -96,11 +97,9 @@ export default function TripActions({
         onClick={handleExportPDF}
         style={buttonStyle}
       >
-
-        📄
+        <FileText size={16} color="#f59e0b" />
 
         {!isMobile && "Export PDF"}
-
       </button>
 
       {/* SHARE */}
@@ -108,11 +107,9 @@ export default function TripActions({
         onClick={handleShareTrip}
         style={buttonStyle}
       >
-
-        🔗
+        <Share2 size={16} color="#10b981" />
 
         {!isMobile && "Share Trip"}
-
       </button>
 
     </div>

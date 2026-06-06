@@ -1,37 +1,47 @@
+import {
+  Crown,
+  Mountain,
+  Palmtree,
+  Heart,
+  Backpack,
+  MoonStar,
+  Sparkles,
+} from "lucide-react";
+
 const TRAVEL_STYLES = [
   {
     label: "Luxury",
-    icon: "✨",
+    icon: Crown,
     color: "#f59e0b",
   },
 
   {
     label: "Adventure",
-    icon: "⛰",
+    icon: Mountain,
     color: "#10b981",
   },
 
   {
     label: "Relaxed",
-    icon: "🌴",
+    icon: Palmtree,
     color: "#00d4e0",
   },
 
   {
     label: "Couple",
-    icon: "❤️",
+    icon: Heart,
     color: "#ec4899",
   },
 
   {
     label: "Backpacker",
-    icon: "🎒",
+    icon: Backpack,
     color: "#8b5cf6",
   },
 
   {
     label: "Nightlife",
-    icon: "🌃",
+    icon: MoonStar,
     color: "#6366f1",
   },
 ];
@@ -72,8 +82,13 @@ export default function TravelPersonality({
               letterSpacing: 1.2,
               textTransform: "uppercase",
               margin: "0 0 6px",
+
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
+            <Sparkles size={12} />
             AI PERSONALIZATION
           </p>
 
@@ -182,13 +197,28 @@ export default function TravelPersonality({
               }}
             >
 
-              <span
+              <div
                 style={{
-                  fontSize: 18,
+                  width: 38,
+                  height: 38,
+                  borderRadius: 12,
+
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+
+                  background: `${style.color}18`,
+                  border: `1px solid ${style.color}25`,
+
+                  flexShrink: 0,
                 }}
               >
-                {style.icon}
-              </span>
+                <style.icon
+                  size={18}
+                  color={style.color}
+                  strokeWidth={2.2}
+                />
+              </div>
 
               <div
                 style={{

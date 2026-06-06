@@ -2,6 +2,23 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getSavedTrips, deleteTrip } from "../services/api";
 import Navbar from "../components/Navbar";
+import {
+  Rocket,
+  Wallet,
+  Compass,
+  Map,
+  Mountain,
+  Palmtree,
+  MapPinned,
+  Calendar,
+  BadgeCheck,
+  Plane,
+  Globe,
+  Crown,
+  LogOut,
+  Trash2,
+  Eye,
+} from "lucide-react";
 
 function useWindowWidth() {
   const [w, setW] = useState(
@@ -29,12 +46,12 @@ function useWindowWidth() {
 }
 
 const BADGES = [
-  { label: "First Trip", icon: "🚀", earned: true },
-  { label: "Budget Master", icon: "💰", earned: true },
-  { label: "Explorer", icon: "🧭", earned: true },
-  { label: "5 Trips", icon: "🗺️", earned: true },
-  { label: "Mountain Lover", icon: "🏔️", earned: false },
-  { label: "Beach Hopper", icon: "🏖️", earned: false },
+  { label: "First Trip", icon: Rocket, earned: true },
+  { label: "Budget Master", icon: Wallet, earned: true },
+  { label: "Explorer", icon: Compass, earned: true },
+  { label: "5 Trips", icon: Map, earned: true },
+  { label: "Mountain Lover", icon: Mountain, earned: false },
+  { label: "Beach Hopper", icon: Palmtree, earned: false },
 ];
 
 const NAV_LINKS = [
@@ -210,7 +227,7 @@ export default function Profile() {
     {
       label: "Trips Planned",
       value: savedTrips.length,
-      icon: "🗺️",
+      icon: Map,
       color: "#00d4e0",
       sub: "Saved journeys",
     },
@@ -224,7 +241,7 @@ export default function Profile() {
         )
       ).size,
 
-      icon: "📍",
+      icon: MapPinned,
       color: "#6366f1",
       sub: "Unique places",
     },
@@ -245,7 +262,7 @@ export default function Profile() {
         }, 0)
         .toLocaleString()}`,
 
-      icon: "💰",
+      icon: Wallet,
       color: "#10b981",
       sub: "Total travel budget",
     },
@@ -260,7 +277,7 @@ export default function Profile() {
         0
       ),
 
-      icon: "📅",
+      icon: Calendar,
       color: "#f59e0b",
       sub: "Across all trips",
     },
@@ -447,9 +464,12 @@ export default function Profile() {
                       background:
                         "rgba(245,158,11,0.15)",
                       color: "#f59e0b",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
                     }}
                   >
-                    ✦ {
+                    <Crown size={12} /> {
                       savedTrips.length > 3
                         ? "Premium"
                         : "Traveler"
@@ -622,7 +642,10 @@ export default function Profile() {
                   marginBottom: 10,
                 }}
               >
-                {s.icon}
+                <s.icon
+                  size={28}
+                  color={s.color}
+                />
               </div>
 
               <h2
@@ -736,7 +759,20 @@ export default function Profile() {
                       "rgba(255,255,255,0.4)",
                   }}
                 >
-                  No saved trips yet ✈️
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <Plane
+                      size={28}
+                      color="rgba(255,255,255,.35)"
+                    />
+                    <span>No saved trips yet</span>
+                  </div>
                 </div>
 
               ) : RECENT_TRIPS.map(
@@ -808,7 +844,20 @@ export default function Profile() {
                 }}
               >
 
-                No saved trips yet ✈️
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <Plane
+                    size={28}
+                    color="rgba(255,255,255,.35)"
+                  />
+                  <span>No saved trips yet</span>
+                </div>
 
               </div>
 
@@ -859,7 +908,19 @@ export default function Profile() {
                       }}
                     >
 
-                      🌍 {trip.destination}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <Globe
+                          size={18}
+                          color="#00d4e0"
+                        />
+                        <span>{trip.destination}</span>
+                      </div>
 
                     </h3>
 
@@ -904,10 +965,15 @@ export default function Profile() {
 
                           fontWeight: 700,
 
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
                         }}
                       >
 
+                        <Eye size={15} />
                         View
 
                       </button>
@@ -934,10 +1000,14 @@ export default function Profile() {
 
                           color: "#ff8080",
 
-                          cursor: "pointer"
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
                         }}
                       >
-
+                        <Trash2 size={15} />
                         Delete
 
                       </button>
@@ -999,7 +1069,10 @@ export default function Profile() {
                     marginBottom: 10
                   }}
                 >
-                  {b.icon}
+                  <b.icon
+                    size={34}
+                    color={b.earned ? "#00d4e0" : "rgba(255,255,255,.4)"}
+                  />
                 </div>
 
                 <h4
@@ -1132,8 +1205,13 @@ export default function Profile() {
                     fontWeight: 700,
                     cursor:
                       "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
                   }}
                 >
+                  <LogOut size={16} />
                   Logout
                 </button>
               </div>

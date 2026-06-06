@@ -1,3 +1,10 @@
+import {
+  Hotel,
+  UtensilsCrossed,
+  Car,
+  Compass,
+} from "lucide-react";
+
 export default function BudgetPanel({
   result,
   isMobile,
@@ -9,32 +16,28 @@ export default function BudgetPanel({
   const budget = result?.budget || {};
 
   const budgetItems = [
-
     {
       label: "Hotels",
       value: result.budget.hotel || 0,
-      icon: "🏨",
+      icon: Hotel,
       color: "#00d4e0",
     },
-
     {
       label: "Food",
       value: result.budget.food || 0,
-      icon: "🍽",
+      icon: UtensilsCrossed,
       color: "#f59e0b",
     },
-
     {
       label: "Transport",
       value: result.budget.travel || 0,
-      icon: "🚕",
+      icon: Car,
       color: "#8b5cf6",
     },
-
     {
       label: "Activities",
       value: result.budget.misc || 0,
-      icon: "🎯",
+      icon: Compass,
       color: "#10b981",
     },
   ];
@@ -155,30 +158,22 @@ export default function BudgetPanel({
             {/* ICON */}
             <div
               style={{
-                width:
-                  compact ? 42 : 52,
-
-                height:
-                  compact ? 42 : 52,
-
+                width: compact ? 42 : 52,
+                height: compact ? 42 : 52,
                 borderRadius: 18,
-
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-
-                background:
-                  `${item.color}18`,
-
-                border:
-                  `1px solid ${item.color}30`,
-
-                fontSize: 22,
-
+                background: `${item.color}18`,
+                border: `1px solid ${item.color}30`,
                 marginBottom: 18,
               }}
             >
-              {item.icon}
+              <item.icon
+                size={compact ? 18 : 22}
+                color={item.color}
+                strokeWidth={2.2}
+              />
             </div>
 
             {/* VALUE */}

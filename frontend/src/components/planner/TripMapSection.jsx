@@ -9,6 +9,11 @@ import {
 import L from "leaflet";
 
 import "leaflet/dist/leaflet.css";
+import {
+    Route,
+    MapPin,
+    Hotel
+} from "lucide-react";
 
 
 /* FIX DEFAULT MARKER ISSUE */
@@ -99,8 +104,13 @@ export default function TripMapSection({
                         letterSpacing: 1.2,
                         textTransform: "uppercase",
                         margin: "0 0 6px",
+
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
                     }}
                 >
+                    <Route size={12} />
                     ROUTE OVERVIEW
                 </p>
 
@@ -166,7 +176,20 @@ export default function TripMapSection({
                     <Marker position={coords}>
 
                         <Popup>
-                            📍 {result.destination}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 6,
+                                    fontWeight: 600,
+                                }}
+                            >
+                                <MapPin
+                                    size={14}
+                                    color="#00d4e0"
+                                />
+                                {result.destination}
+                            </div>
                         </Popup>
 
                     </Marker>
@@ -197,17 +220,33 @@ export default function TripMapSection({
 
                                     <div
                                         style={{
-                                            minWidth: 140,
+                                            minWidth: 160,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: 8,
                                         }}
                                     >
 
-                                        <strong>
-                                            {hotel.name}
-                                        </strong>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 6,
+                                            }}
+                                        >
+                                            <Hotel
+                                                size={14}
+                                                color="#6366f1"
+                                            />
 
-                                        <br />
+                                            <strong>
+                                                {hotel.name}
+                                            </strong>
+                                        </div>
 
-                                        ₹{hotel.price}
+                                        <span>
+                                            ₹{hotel.price}
+                                        </span>
 
                                     </div>
 

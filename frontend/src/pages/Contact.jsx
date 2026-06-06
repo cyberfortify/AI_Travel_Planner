@@ -2,6 +2,26 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import emailjs from "@emailjs/browser";
+import {
+  Bot,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  MessageCircle,
+  Tag,
+  Shield,
+  Globe,
+  Camera,
+  Briefcase,
+  Play,
+  Send,
+  HelpCircle,
+  Radio,
+  CheckCircle,
+  ArrowRight,
+  Plane
+} from "lucide-react";
 
 function useWindowWidth() {
   const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
@@ -329,7 +349,10 @@ export default function Contact() {
               fontSize: 20
             }}
           >
-            ✅
+            <CheckCircle
+              size={20}
+              color="#10b981"
+            />
           </div>
 
           <div>
@@ -409,7 +432,10 @@ export default function Contact() {
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 99, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", fontSize: 12, color: "rgba(255,255,255,0.5)", cursor: "pointer", transition: "all .2s" }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = c.color + "44"; e.currentTarget.style.color = "#fff"; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}>
-                      <span>{c.icon}</span><span>{c.label}</span>
+                      <span><c.icon
+                        size={14}
+                        color={c.color}
+                      /></span><span>{c.label}</span>
                     </div>
                   ))}
                 </div>
@@ -422,7 +448,7 @@ export default function Contact() {
                 <div style={{ borderRadius: 28, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", padding: "28px 28px 24px", backdropFilter: "blur(20px)" }}>
                   {/* "typing" animation header */}
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#00c8d4,#1a6fcc)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>✈️</div>
+                    <div style={{ width: 38, height: 38, borderRadius: 12, background: "linear-gradient(135deg,#00c8d4,#1a6fcc)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}><Plane size={18} color="#fff" /></div>
                     <div>
                       <p style={{ fontSize: 13, fontWeight: 700, margin: "0 0 1px" }}>GoVibe AI Travel Assistant</p>
                       <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -440,7 +466,7 @@ export default function Contact() {
                     <div
                       ref={chatContainerRef}
                       style={{
-                        height: 230,
+                        height: 250,
                         overflowY: "auto",
                         display: "flex",
                         flexDirection: "column",
@@ -478,7 +504,7 @@ export default function Contact() {
                                 boxShadow: "0 0 10px rgba(0,200,212,0.35)",
                               }}
                             >
-                              ✈️
+                              <Bot size={14} color="#fff" />
                             </div>
                           )}
                           {msg.type === "user" && (
@@ -496,7 +522,10 @@ export default function Contact() {
                                 flexShrink: 0,
                               }}
                             >
-                              👤
+                              <Field
+                                label="Email Address"
+                                icon={<Mail size={12} />}
+                              />
                             </div>
                           )}
 
@@ -553,7 +582,7 @@ export default function Contact() {
                               flexShrink: 0,
                             }}
                           >
-                            ✈️
+                            <Bot size={14} color="#fff" />
                           </div>
 
                           <div
@@ -591,11 +620,71 @@ export default function Contact() {
                         marginBottom: 12,
                       }}
                     >
-                      {["✈️ Bali trip", "🏖️ Goa budget", "🌏 Thailand"].map((chip) => (
+                      {[
+                        "🏖️ Goa budget",
+                        "👨‍👩‍👧 Family trip",
+                        "💑 Couple getaway",
+                        "🏨 Best hotels",
+                      ].map((chip) => (
                         <button
                           key={chip}
                           onClick={() => {
-                            setChatInput(chip.split(" ").slice(1).join(" "));
+
+                            const text =
+                              chip.split(" ")
+                                .slice(1)
+                                .join(" ");
+
+                            setChatInput("");
+
+                            setTimeout(async () => {
+
+                              setMessages(prev => [
+                                ...prev,
+                                {
+                                  type: "user",
+                                  text,
+                                }
+                              ]);
+
+                              setIsTyping(true);
+
+                              try {
+
+                                const response =
+                                  await fetch(
+                                    "http://localhost:8000/chat",
+                                    {
+                                      method: "POST",
+                                      headers: {
+                                        "Content-Type":
+                                          "application/json",
+                                      },
+                                      body: JSON.stringify({
+                                        message: text,
+                                      }),
+                                    }
+                                  );
+
+                                const data =
+                                  await response.json();
+
+                                setMessages(prev => [
+                                  ...prev,
+                                  {
+                                    type: "bot",
+                                    text: data.reply,
+                                  }
+                                ]);
+
+                              } finally {
+
+                                setIsTyping(false);
+
+                              }
+
+                            }, 100);
+
                           }}
                           style={{
                             padding: "5px 11px",
@@ -640,7 +729,10 @@ export default function Contact() {
                       onFocus={e => e.currentTarget.style.borderColor = "rgba(0,212,224,0.4)"}
                       onBlur={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"}
                     >
-                      <span style={{ fontSize: 14, opacity: 0.4 }}>💬</span>
+                      <span style={{ fontSize: 14, opacity: 0.4 }}><MessageCircle
+                        size={14}
+                        color="rgba(255,255,255,.4)"
+                      /></span>
                       <input
                         value={chatInput}
                         onChange={e => setChatInput(e.target.value)}
@@ -659,28 +751,45 @@ export default function Contact() {
                       />
                       <button
                         onClick={sendMessage}
+                        disabled={isTyping}
                         style={{
                           width: 32,
                           height: 32,
                           borderRadius: 10,
                           border: "none",
-                          cursor: "pointer",
+
+                          cursor:
+                            isTyping
+                              ? "not-allowed"
+                              : "pointer",
+
+                          opacity:
+                            isTyping
+                              ? 0.6
+                              : 1,
+
                           background: chatInput.trim()
                             ? "linear-gradient(135deg,#00c8d4,#1a6fcc)"
                             : "rgba(255,255,255,0.07)",
+
                           color: "#fff",
+
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+
                           fontSize: 13,
+
                           transition: "all .2s",
+
                           flexShrink: 0,
+
                           boxShadow: chatInput.trim()
                             ? "0 4px 12px rgba(0,180,210,0.3)"
                             : "none",
                         }}
                       >
-                        ➤
+                        {isTyping ? "..." : <Send size={14} />}
                       </button>
                     </div>
 
@@ -728,13 +837,13 @@ export default function Contact() {
 
                   {/* Name + Email */}
                   <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14 }}>
-                    <Field label="Full Name" icon="👤" error={errors.name}>
+                    <Field label="Full Name" icon={<User size={14} color="rgba(255,255,255,0.4)" />} error={errors.name}>
                       <input name="name" value={form.name} onChange={onChange} placeholder="Arjun Sharma"
                         style={inputStyle("name")}
                         onFocus={() => setActiveField("name")}
                         onBlur={() => setActiveField(null)} />
                     </Field>
-                    <Field label="Email Address" icon="📧" error={errors.email}>
+                    <Field label="Email Address" icon={<Mail size={14} color="rgba(255,255,255,0.4)" />} error={errors.email}>
                       <input name="email" value={form.email} onChange={onChange} placeholder="you@example.com"
                         style={inputStyle("email")}
                         onFocus={() => setActiveField("email")}
@@ -743,7 +852,10 @@ export default function Contact() {
                   </div>
 
                   {/* Type selector */}
-                  <Field label="Message Type" icon="🏷️">
+                  <Field label="Message Type" icon={<Field
+                    label="Message Type"
+                    icon={<Tag size={12} />}
+                  />}>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                       {types.map(t => (
                         <button key={t} onClick={() => setForm(p => ({ ...p, type: t }))}
@@ -761,7 +873,7 @@ export default function Contact() {
                   </Field>
 
                   {/* Message */}
-                  <Field label="Your Message" icon="💬" error={errors.message}>
+                  <Field label="Your Message" icon={<MessageCircle size={14} color="rgba(255,255,255,0.4)" />} error={errors.message}>
                     <div style={{ position: "relative" }}>
                       <textarea name="message" value={form.message} onChange={onChange} rows={5}
                         placeholder="Tell us what's on your mind…"
@@ -790,7 +902,7 @@ export default function Contact() {
                   </button>
 
                   <p style={{ fontSize: 11, color: "rgba(255,255,255,0.18)", textAlign: "center", margin: 0 }}>
-                    🔒 Your data is private and never shared with third parties.
+                    <Shield size={12} /> Your data is private and never shared with third parties.
                   </p>
                 </div>
               </div>
@@ -802,25 +914,26 @@ export default function Contact() {
               {/* Availability */}
               <div style={{ borderRadius: 20, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", padding: "22px 22px", overflow: "hidden", position: "relative" }}>
                 <div style={{ position: "absolute", top: "-40%", right: "-30%", width: 180, height: 180, background: "radial-gradient(circle,rgba(0,212,224,0.07),transparent 70%)", pointerEvents: "none" }} />
-                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 16px" }}>📡 Reach Us</p>
+                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 16px" }}><Radio size={12} />
+                  Reach Us</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {[
                     {
-                      icon: "📧",
+                      icon: Mail,
                       label: "Email",
                       value: "support@GoVibe.com",
                       color: "#00d4e0",
                       action: handleEmail
                     },
                     {
-                      icon: "📞",
+                      icon: Phone,
                       label: "Phone",
                       value: "+91 98765 43210",
                       color: "#6366f1",
                       action: handlePhone
                     },
                     {
-                      icon: "📍",
+                      icon: MapPin,
                       label: "Office",
                       value: "Bangalore, India",
                       color: "#f59e0b",
@@ -830,7 +943,10 @@ export default function Contact() {
                     <div key={i} onClick={c.action} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 13, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.05)", cursor: "pointer", transition: "all .2s" }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = c.color + "44"; e.currentTarget.style.background = `${c.color}08`; }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.05)"; e.currentTarget.style.background = "rgba(255,255,255,0.025)"; }}>
-                      <div style={{ width: 36, height: 36, borderRadius: 11, background: `${c.color}15`, border: `1px solid ${c.color}28`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>{c.icon}</div>
+                      <div style={{ width: 36, height: 36, borderRadius: 11, background: `${c.color}15`, border: `1px solid ${c.color}28`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}><c.icon
+                        size={14}
+                        color={c.color}
+                      /></div>
                       <div>
                         <p style={{ fontSize: 10, fontWeight: 700, color: c.color, letterSpacing: .8, textTransform: "uppercase", margin: "0 0 2px" }}>{c.label}</p>
                         <p style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.65)", margin: 0 }}>{c.value}</p>
@@ -842,13 +958,13 @@ export default function Contact() {
 
               {/* Social */}
               <div style={{ borderRadius: 20, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", padding: "22px 22px" }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 14px" }}>🌐 Social</p>
+                <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.28)", letterSpacing: 1.2, textTransform: "uppercase", margin: "0 0 14px" }}><Globe size={12} /> Social</p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}>
                   {[
                     { platform: "Twitter", handle: "@GoVibe_ai", emoji: "𝕏", color: "#00d4e0" },
-                    { platform: "Instagram", handle: "@GoVibe", emoji: "📸", color: "#ec4899" },
-                    { platform: "LinkedIn", handle: "GoVibe", emoji: "in", color: "#6366f1" },
-                    { platform: "YouTube", handle: "GoVibe AI", emoji: "▶", color: "#f59e0b" },
+                    { platform: "Instagram", handle: "@GoVibe", emoji: <Instagram size={14} color="#ec4899" />, color: "#ec4899" },
+                    { platform: "LinkedIn", handle: "GoVibe", emoji: <Linkedin size={18} />, color: "#6366f1" },
+                    { platform: "YouTube", handle: "GoVibe AI", emoji: <Youtube size={18} />, color: "#f59e0b" },
                   ].map((s, i) => (
                     <div key={i} style={{ padding: "12px", borderRadius: 14, background: "rgba(255,255,255,0.025)", border: `1px solid rgba(255,255,255,0.06)`, cursor: "pointer", transition: "all .2s", textAlign: "center" }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor = s.color + "44"; e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.background = `${s.color}0a`; }}
@@ -884,7 +1000,8 @@ export default function Contact() {
                 color: "rgba(255,255,255,0.3)"
               }}
             >
-              ❓ FAQ
+              <HelpCircle size={12} />
+              FAQ
             </p>
 
             {FAQS.map((f, i) => (

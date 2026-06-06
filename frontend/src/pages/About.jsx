@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { Sparkles, Wallet, Hotel, Globe, Smartphone, RefreshCw, Map, MapPin, Smile, Zap, Calendar, Users, Palette, Compass, Rocket, ArrowRight, Star} from "lucide-react";
 
 function useWindowWidth() {
   const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
@@ -51,26 +52,46 @@ function AnimatedNumber({ target, suffix = "" }) {
 }
 
 const FEATURES = [
-  { icon: "⚡", color: "#00d4e0", glow: "rgba(0,212,224,0.12)", title: "Instant Planning", desc: "Generate a full day-wise itinerary in under 30 seconds — no research, no tabs, no stress." },
-  { icon: "💰", color: "#10b981", glow: "rgba(16,185,129,0.12)", title: "Budget-Smart", desc: "Every rupee is distributed across stays, food, transport & activities. Stay on track, always." },
-  { icon: "🏨", color: "#6366f1", glow: "rgba(99,102,241,0.12)", title: "Curated Hotels", desc: "Handpicked accommodations filtered by your budget and destination — no surprises on checkout." },
-  { icon: "🌍", color: "#f59e0b", glow: "rgba(245,158,11,0.12)", title: "500+ Destinations", desc: "From Bali beaches to Himalayan peaks — GoVibe knows where you want to be." },
-  { icon: "📱", color: "#ec4899", glow: "rgba(236,72,153,0.12)", title: "Beautifully Simple", desc: "Three fields. One click. A complete trip plan. No learning curve whatsoever." },
-  { icon: "🔄", color: "#8b5cf6", glow: "rgba(139,92,246,0.12)", title: "Always Improving", desc: "Our AI and destination data is continuously updated so your plans stay fresh and accurate." },
+  { icon: Zap, color: "#00d4e0", glow: "rgba(0,212,224,0.12)", title: "Instant Planning", desc: "Generate a full day-wise itinerary in under 30 seconds — no research, no tabs, no stress." },
+  { icon: Wallet, color: "#10b981", glow: "rgba(16,185,129,0.12)", title: "Budget-Smart", desc: "Every rupee is distributed across stays, food, transport & activities. Stay on track, always." },
+  { icon: Hotel, color: "#6366f1", glow: "rgba(99,102,241,0.12)", title: "Curated Hotels", desc: "Handpicked accommodations filtered by your budget and destination — no surprises on checkout." },
+  { icon: Globe, color: "#f59e0b", glow: "rgba(245,158,11,0.12)", title: "500+ Destinations", desc: "From Bali beaches to Himalayan peaks — GoVibe knows where you want to be." },
+  { icon: Smartphone, color: "#ec4899", glow: "rgba(236,72,153,0.12)", title: "Beautifully Simple", desc: "Three fields. One click. A complete trip plan. No learning curve whatsoever." },
+  { icon: RefreshCw, color: "#8b5cf6", glow: "rgba(139,92,246,0.12)", title: "Always Improving", desc: "Our AI and destination data is continuously updated so your plans stay fresh and accurate." },
 ];
 
 const STATS = [
-  { value: 10000, suffix: "+", label: "Trips Planned", icon: "🗺️" },
-  { value: 500, suffix: "+", label: "Destinations", icon: "📍" },
-  { value: 98, suffix: "%", label: "Happy Travelers", icon: "😊" },
-  { value: 30, suffix: "s", label: "Avg Plan Time", icon: "⚡" },
+  { value: 10000, suffix: "+", label: "Trips Planned", icon: Map },
+  { value: 500, suffix: "+", label: "Destinations", icon: MapPin },
+  { value: 98, suffix: "%", label: "Happy Travelers", icon: Smile },
+  { value: 30, suffix: "s", label: "Avg Plan Time", icon: Zap },
 ];
 
 const TEAM = [
-  { name: "Ansh Sharma", role: "Founder & CEO", emoji: "👨‍💼", color: "#00d4e0" },
-  { name: "Priya Mehta", role: "Head of AI", emoji: "👩‍💻", color: "#6366f1" },
-  { name: "Rahul Verma", role: "Lead Designer", emoji: "🎨", color: "#f59e0b" },
-  { name: "Sneha Pillai", role: "Travel Curator", emoji: "🌏", color: "#10b981" },
+  {
+    name: "Ansh Sharma",
+    role: "Founder & CEO",
+    icon: Users,
+    color: "#00d4e0"
+  },
+  {
+    name: "Priya Mehta",
+    role: "Head of AI",
+    icon: Sparkles,
+    color: "#6366f1"
+  },
+  {
+    name: "Rahul Verma",
+    role: "Lead Designer",
+    icon: Palette,
+    color: "#f59e0b"
+  },
+  {
+    name: "Sneha Pillai",
+    role: "Travel Curator",
+    icon: Compass,
+    color: "#10b981"
+  },
 ];
 
 const TIMELINE = [
@@ -137,7 +158,10 @@ export default function About() {
 
         {/* ── HERO ── */}
         <section style={{ padding: `${isMobile ? "52px" : "80px"} ${px} ${isMobile ? "60px" : "90px"}`, textAlign: "center", maxWidth: 900, margin: "0 auto" }}>
-          <Badge>✨ Your AI Travel Companion</Badge>
+          <Badge>
+            <Sparkles size={12} />
+            Your AI Travel Companion
+          </Badge>
           <h1 style={{ fontSize: `clamp(${isMobile ? "1.8rem" : "2.4rem"},6vw,4rem)`, fontWeight: 900, margin: "22px 0 18px", lineHeight: 1.08, letterSpacing: "-.02em" }}>
             We're Building the<br />
             <span style={{ background: "linear-gradient(135deg,#00d4e0,#6366f1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
@@ -160,10 +184,15 @@ export default function About() {
                 fontSize: isMobile ? 13 : 14,
                 fontWeight: 700,
                 cursor: "pointer",
-                boxShadow: "0 8px 28px rgba(0,180,210,0.3)"
+                boxShadow: "0 8px 28px rgba(0,180,210,0.3)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
               }}
             >
-              Start Planning Free →
+              Start Planning Free
+              <ArrowRight size={16} />
             </button>
             <button
               disabled
@@ -201,7 +230,10 @@ export default function About() {
           }}>
             {STATS.map((s, i) => (
               <div key={i} style={{ textAlign: "center", padding: isMobile ? "8px 0" : "0" }}>
-                <div style={{ fontSize: isMobile ? 22 : 28, marginBottom: 8 }}>{s.icon}</div>
+                <div style={{ fontSize: isMobile ? 22 : 28, marginBottom: 8 }}><s.icon
+                  size={24}
+                  color="#00d4e0"
+                /></div>
                 <div style={{ fontSize: `clamp(1.6rem,${isMobile ? "5vw" : "4vw"},2.8rem)`, fontWeight: 900, background: "linear-gradient(135deg,#00d4e0,#6366f1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1 }}>
                   <AnimatedNumber target={s.value} suffix={s.suffix} />
                 </div>
@@ -220,7 +252,10 @@ export default function About() {
             alignItems: "center",
           }}>
             <div>
-              <Badge>🎯 Our Purpose</Badge>
+              <Badge>
+                <Compass size={12} />
+                Our Purpose
+              </Badge>
               <h2 style={{ fontSize: `clamp(${isMobile ? "1.5rem" : "1.8rem"},4vw,2.6rem)`, fontWeight: 900, margin: "20px 0 18px", lineHeight: 1.15 }}>
                 Travel Should Be<br />Experienced, Not{" "}
                 <span style={{ background: "linear-gradient(135deg,#00d4e0,#6366f1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Spreadsheet-Managed</span>
@@ -242,7 +277,16 @@ export default function About() {
               overflow: "hidden", position: "relative",
             }}>
               <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: isMobile ? 12 : 13, fontWeight: 700, color: "rgba(255,255,255,0.6)" }}>📅 Your Goa Itinerary</span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8
+                  }}
+                >
+                  <Calendar size={14} />
+                  <span>Your Goa Itinerary</span>
+                </div>
                 <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 99, background: "rgba(16,185,129,0.15)", color: "#10b981", fontWeight: 700 }}>7 Days</span>
               </div>
               {[
@@ -288,7 +332,10 @@ export default function About() {
                   transition: "all .3s ease",
                 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 13, background: f.glow, border: `1px solid ${f.color}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, marginBottom: 14, transition: "transform .3s", transform: hoveredFeature === i ? "scale(1.1)" : "scale(1)" }}>
-                  {f.icon}
+                  <f.icon
+                    size={22}
+                    color={f.color}
+                  />
                 </div>
                 <h3 style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: "#fff", margin: "0 0 7px" }}>{f.title}</h3>
                 <p style={{ fontSize: isMobile ? 12 : 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>{f.desc}</p>
@@ -310,7 +357,11 @@ export default function About() {
             {TIMELINE.map((t, i) => (
               <div key={i} style={{ display: "flex", gap: isMobile ? 16 : 24, marginBottom: isMobile ? 28 : 36, position: "relative", zIndex: 1 }}>
                 <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg,#00c8d4,#1a6fcc)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 0 4px rgba(0,200,212,0.12)" }}>
-                  <span style={{ fontSize: 13 }}>✦</span>
+                  <span style={{ fontSize: 13 }}><Star
+                    size={14}
+                    color="white"
+                    fill="white"
+                  /></span>
                 </div>
                 <div style={{ paddingTop: 5 }}>
                   <span style={{ fontSize: 11, fontWeight: 700, color: "#00d4e0", letterSpacing: 1, textTransform: "uppercase" }}>{t.year}</span>
@@ -325,7 +376,10 @@ export default function About() {
         {/* ── TEAM ── */}
         <section style={{ maxWidth: 1100, margin: "0 auto", padding: `0 ${px} ${isMobile ? "60px" : "90px"}` }}>
           <div style={{ textAlign: "center", marginBottom: isMobile ? 32 : 48 }}>
-            <Badge>👥 The Team</Badge>
+            <Badge>
+              <Users size={12} />
+              The Team
+            </Badge>
             <h2 style={{ fontSize: `clamp(${isMobile ? "1.5rem" : "1.8rem"},4vw,2.6rem)`, fontWeight: 900, margin: "20px 0 10px" }}>
               People Behind GoVibe
             </h2>
@@ -345,7 +399,10 @@ export default function About() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = m.color + "44"; e.currentTarget.style.transform = "translateY(-5px)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.transform = "translateY(0)"; }}>
                 <div style={{ width: isMobile ? 52 : 62, height: isMobile ? 52 : 62, borderRadius: 18, background: `linear-gradient(135deg,${m.color}22,${m.color}08)`, border: `1.5px solid ${m.color}40`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: isMobile ? 22 : 26, margin: "0 auto 12px" }}>
-                  {m.emoji}
+                  <m.icon
+                    size={26}
+                    color={m.color}
+                  />
                 </div>
                 <p style={{ fontSize: isMobile ? 12 : 14, fontWeight: 700, color: "#fff", margin: "0 0 4px" }}>{m.name}</p>
                 <p style={{ fontSize: isMobile ? 10 : 12, color: "rgba(255,255,255,0.35)", margin: 0 }}>{m.role}</p>
@@ -366,7 +423,10 @@ export default function About() {
           }}>
             <div style={{ position: "absolute", top: "-40%", left: "50%", transform: "translateX(-50%)", width: 400, height: 400, background: "radial-gradient(circle,rgba(0,212,224,0.07),transparent 65%)", pointerEvents: "none" }} />
             <div style={{ position: "relative", zIndex: 1 }}>
-              <Badge>🚀 Get Started</Badge>
+              <Badge>
+                <Rocket size={12} />
+                Get Started
+              </Badge>
               <h2 style={{ fontSize: `clamp(${isMobile ? "1.5rem" : "1.8rem"},4vw,2.8rem)`, fontWeight: 900, margin: "20px 0 12px", lineHeight: 1.1 }}>
                 Ready for a Stress-Free Trip?
               </h2>
@@ -387,10 +447,14 @@ export default function About() {
                     fontWeight: 700,
                     cursor: "pointer",
                     boxShadow: "0 8px 32px rgba(0,180,210,0.35)",
-                    width: isMobile ? "100%" : "auto"
+                    width: isMobile ? "100%" : "auto",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
                   }}
                 >
-                  Start Planning Now →
+                  Start Planning Now <ArrowRight size={16} />
                 </button>
                 <button
                   onClick={goToFeatures}

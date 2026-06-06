@@ -1,7 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValue, animate } from "framer-motion";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { Plane, Info, HelpCircle, User, Menu, X } from "lucide-react";
+import { Plane, Info, HelpCircle, User, Menu, X, Camera } from "lucide-react";
+import { Globe, Wallet, Sparkles, Briefcase, Bookmark, Heart, ArrowRight } from "lucide-react";
 import { generatePlan } from "../services/api";
 import AuthModal from "../components/AuthModal";
 import Navbar from "../components/Navbar";
@@ -9,22 +10,22 @@ import logo from "../assets/logo.png";
 
 const steps = [
   {
-    number: "01", icon: "🌍", title: "Pick Your Destination",
+    number: "01", icon: Globe, title: "Pick Your Destination",
     desc: "Tell us where you want to go — any city, country, or region. Our AI knows thousands of destinations worldwide.",
     color: "#00d4e0", glow: "rgba(0,212,224,0.12)",
   },
   {
-    number: "02", icon: "💰", title: "Set Your Budget & Days",
+    number: "02", icon: Wallet, title: "Set Your Budget & Days",
     desc: "Enter your total budget and trip duration. We'll make sure every rupee is planned wisely across stays, food & activities.",
     color: "#6366f1", glow: "rgba(99,102,241,0.12)",
   },
   {
-    number: "03", icon: "⚡", title: "AI Generates Your Plan",
+    number: "03", icon: Sparkles, title: "AI Generates Your Plan",
     desc: "In under 2 minutes, get a complete day-wise itinerary with hotels, restaurants, and must-see spots — all within budget.",
     color: "#f59e0b", glow: "rgba(245,158,11,0.12)",
   },
   {
-    number: "04", icon: "🧳", title: "Pack & Go",
+    number: "04", icon: Briefcase, title: "Pack & Go",
     desc: "Your personalized travel plan is ready. Download it, share it, and head off on your dream trip with zero stress.",
     color: "#10b981", glow: "rgba(16,185,129,0.12)",
   },
@@ -244,7 +245,7 @@ const Home = () => {
                 className="mt-4 flex items-center gap-2 text-base font-semibold group transition-all"
                 style={{ color: "#00d4e0" }}>
                 <span className="border-b border-[#00d4e0] pb-0.5">Explore Our Journey</span>
-                <span className="text-xl leading-none transition-transform group-hover:translate-x-1">→</span>
+                <span className="text-xl leading-none transition-transform group-hover:translate-x-1"><ArrowRight size={20} /></span>
               </button>
             </div>
           </div>
@@ -329,7 +330,7 @@ const Home = () => {
                       <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="4" fill="none" strokeDasharray="30" strokeDashoffset="10" />
                       </svg>
-                    ) : <>Generate <span>→</span></>}
+                    ) : <>Generate <span><ArrowRight size={20} /></span></>}
                   </button>
                 </div>
               </div>
@@ -382,7 +383,10 @@ const Home = () => {
                 </div>
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 mt-2 transition-transform duration-300 group-hover:scale-110"
                   style={{ background: `linear-gradient(135deg, ${s.glow}, rgba(255,255,255,0.04))`, border: `1px solid ${s.color}30`, boxShadow: `0 8px 24px ${s.glow}` }}>
-                  {s.icon}
+                  <s.icon
+                    size={28}
+                    color={s.color}
+                  />
                 </div>
                 <h3 className="text-white font-bold text-base mb-2 leading-snug">{s.title}</h3>
                 <p className="text-white/40 text-xs leading-relaxed">{s.desc}</p>
@@ -453,7 +457,7 @@ const Home = () => {
                   fontSize: 14
                 }}
               >
-                Explore →
+                Explore <ArrowRight size={16} />
               </button>
             </div>
 
@@ -484,7 +488,7 @@ const Home = () => {
                           <StarRating count={dest.card.stars} />
                         </div>
                         <button className="absolute rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center"
-                          style={{ top: 14, right: 14, width: 30, height: 30, fontSize: 12 }}>🔖</button>
+                          style={{ top: 14, right: 14, width: 30, height: 30, fontSize: 12 }}><Bookmark size={14} /></button>
                       </div>
                     );
                   })}
@@ -512,7 +516,7 @@ const Home = () => {
           style={{ background: "linear-gradient(-90deg, #060a12, transparent)", zIndex: 10 }} />
 
         <MarqueeRow
-          items={["Bali 🌴", "Paris 🗼", "Kyoto ⛩️", "Santorini 🏛️", "Dubai 🌆", "Maldives 🐚", "New York 🗽", "Bangkok 🛕"]}
+          items={["Bali", "Paris", "Kyoto", "Santorini", "Dubai", "Maldives", "New York", "Bangkok"]}
           direction={1} speed={30} />
 
         <div className="relative z-10 text-center py-8 px-5">
@@ -535,13 +539,13 @@ const Home = () => {
               boxShadow: "0 12px 40px rgba(0,200,212,0.25)"
             }}
           >
-            Plan My Trip →
+            Plan My Trip <ArrowRight size={20} />
           </button>
         </div>
 
         <MarqueeRow
-          items={["Rome 🏟️", "Cape Town 🌅", "Queenstown 🏔️", "Phuket 🏖️", "Amsterdam 🚲", "Istanbul 🕌", "Petra 🪨", "Machu Picchu 🌿"]}
-          direction={-1} speed={25} />
+          items={["Rome", "Cape Town", "Queenstown", "Phuket", "Amsterdam", "Istanbul", "Petra", "Machu Picchu"]}
+          direction={-1} speed={30} />
 
         <div className="absolute bottom-0 left-0 w-full h-px"
           style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
@@ -617,10 +621,18 @@ const Home = () => {
               <div className="flex items-center gap-3 mt-5">
 
                 {[
-                  { icon: "𝕏", url: socialLinks.x },
-                  { icon: "in", url: socialLinks.linkedin },
-                  { icon: "ig", url: socialLinks.instagram }
-
+                  {
+                    icon: Globe,
+                    url: socialLinks.x
+                  },
+                  {
+                    icon: Briefcase,
+                    url: socialLinks.linkedin
+                  },
+                  {
+                    icon: Camera,
+                    url: socialLinks.instagram
+                  }
                 ].map((s, i) => (
 
                   <button
@@ -633,7 +645,10 @@ const Home = () => {
                     }}
                   >
 
-                    {s.icon}
+                    <s.icon
+                      size={28}
+                      color={s.color}
+                    />
 
                   </button>
 
@@ -739,7 +754,20 @@ const Home = () => {
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-6">
             <p className="text-white/25 text-xs">© 2026 GoVibe. All rights reserved.</p>
-            <p className="text-white/20 text-xs">Made with ❤️ for travelers worldwide</p>
+
+            <div
+              className="text-white/20 text-xs"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6
+              }}
+            >
+              <span>Made with</span>
+              <Heart size={14} />
+              <span>for travelers worldwide</span>
+            </div>
+
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               <span className="text-white/25 text-xs">All systems operational</span>

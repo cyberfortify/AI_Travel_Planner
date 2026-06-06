@@ -7,6 +7,8 @@ import {
   User,
   Menu,
   X,
+  LogOut,
+  ChevronDown,
 } from "lucide-react";
 import AuthModal from "./AuthModal";
 import { useNavigate } from "react-router-dom";
@@ -215,6 +217,10 @@ export default function Navbar() {
                   to={link.path}
                   className="text-sm font-medium transition-all duration-200"
                   style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+
                     color: active
                       ? "#fff"
                       : "rgba(255,255,255,0.55)",
@@ -234,7 +240,9 @@ export default function Navbar() {
                       : "1px solid transparent",
                   }}
                 >
+                  <link.icon size={14} />
                   {link.name}
+
                 </Link>
               );
             })}
@@ -319,14 +327,10 @@ export default function Navbar() {
                   </div>
 
                   {/* ARROW */}
-                  <span
-                    style={{
-                      color: "rgba(255,255,255,0.4)",
-                      fontSize: 12,
-                    }}
-                  >
-                    ▼
-                  </span>
+                  <ChevronDown
+                    size={14}
+                    color="rgba(255,255,255,0.4)"
+                  />
                 </div>
 
                 {/* DROPDOWN */}
@@ -387,9 +391,15 @@ export default function Navbar() {
 
                       <button
                         onClick={() => navigate("/profile")}
-                        style={menuBtn}
+                        style={{
+                          ...menuBtn,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
                       >
-                        👤 Profile
+                        <User size={16} />
+                        Profile
                       </button>
 
 
@@ -398,9 +408,13 @@ export default function Navbar() {
                         style={{
                           ...menuBtn,
                           color: "#ff6b6b",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
                         }}
                       >
-                        🚪 Logout
+                        <LogOut size={16} />
+                        Logout
                       </button>
                     </div>
                   </div>

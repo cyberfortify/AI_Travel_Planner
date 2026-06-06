@@ -1,5 +1,6 @@
 import HotelCard from "../HotelCard";
 import HotelModal from "../HotelModal";
+import { Hotel } from "lucide-react";
 
 export default function HotelSection({
 
@@ -52,8 +53,13 @@ export default function HotelSection({
               letterSpacing: 1.2,
               textTransform: "uppercase",
               margin: "0 0 6px",
+
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
+            <Hotel size={12} />
             CURATED STAYS
           </p>
 
