@@ -7,23 +7,14 @@ import {
 import TripActions from "./TripActions";
 
 export default function PlannerHero({
-
   result,
-
   formData,
-
   destinationImage,
-
   isMobile,
-
   buttonStyle,
-
   setResult,
-
   handleSaveTrip,
-
   handleExportPDF,
-
   handleShareTrip,
 
 }) {
@@ -256,6 +247,7 @@ export default function PlannerHero({
           </div>
 
         </div>
+
 
       </div>
 

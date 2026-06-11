@@ -39,6 +39,8 @@ import {
 } from "../utils/travelPersonalization";
 import TripMapSection
   from "../components/planner/TripMapSection";
+import AgentTimeline from "../components/planner/AgentTimeline";
+import AgentLoading from "../components/planner/AgentLoading";
 
 
 const BUDGET_META = {
@@ -98,6 +100,7 @@ export default function Planner() {
   const location = useLocation();
   const initRes = location.state?.result || null;
   const initData = location.state?.formData || {};
+  const initialFormData = location.state?.formData;
   const [saveMessage, setSaveMessage] = useState("");
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [pendingHotelLike, setPendingHotelLike] = useState(null);
@@ -125,6 +128,59 @@ export default function Planner() {
   const [hotelLoading, setHotelLoading] = useState(true);
   const [likedHotels, setLikedHotels] = useState([]);
   const [travelStyle, setTravelStyle] = useState("Luxury");
+
+  const generateTripAutomatically =
+    async () => {
+
+      setLoading(true);
+
+      try {
+
+        const startTime =
+          Date.now();
+
+        const r =
+          await generatePlan(
+            initialFormData
+          );
+
+        const elapsed =
+          Date.now() - startTime;
+
+        const MIN_LOADING_TIME =
+          4500;
+
+        if (
+          elapsed < MIN_LOADING_TIME
+        ) {
+
+          await new Promise(
+            resolve =>
+              setTimeout(
+                resolve,
+                MIN_LOADING_TIME - elapsed
+              )
+          );
+
+        }
+
+        setResult(r.data);
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+  useEffect(() => {
+
+    if (!initialFormData) return;
+
+    generateTripAutomatically();
+
+  }, []);
 
   // SAVE TRIP FUNCTION
   const handleSaveTrip = async () => {
@@ -334,14 +390,44 @@ export default function Planner() {
       return;
     }
     try {
+
       setLoading(true);
+
+      const startTime = Date.now();
+
       const r = await generatePlan(formData);
+
+      const elapsed =
+        Date.now() - startTime;
+
+      const MIN_LOADING_TIME = 4500;
+
+      if (
+        elapsed < MIN_LOADING_TIME
+      ) {
+
+        await new Promise(
+          resolve =>
+            setTimeout(
+              resolve,
+              MIN_LOADING_TIME - elapsed
+            )
+        );
+
+      }
+
       setActiveDay(0);
+
       setResult(r.data);
+
     } catch {
+
       alert("Error generating plan");
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
@@ -864,75 +950,7 @@ export default function Planner() {
             LOADING STATE
         ══════════════════════════════════ */}
         {loading && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-              padding: "80px 24px",
-            }}
-          >
-            <div
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 18,
-                background: "rgba(0,200,212,0.08)",
-                border: "1px solid rgba(0,200,212,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <svg
-                style={{ animation: "spin 1s linear infinite" }}
-                width={28}
-                height={28}
-                viewBox="0 0 24 24"
-              >
-                <defs>
-                  <linearGradient id="sg">
-                    <stop offset="0%" stopColor="#00d4e0" />
-                    <stop offset="100%" stopColor="#6366f1" />
-                  </linearGradient>
-                </defs>
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="url(#sg)"
-                  strokeWidth="2.5"
-                  fill="none"
-                  strokeDasharray="38"
-                  strokeDashoffset="10"
-                />
-              </svg>
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <p
-                style={{
-                  color: "#fff",
-                  fontWeight: 700,
-                  fontSize: 18,
-                  margin: "0 0 6px",
-                }}
-              >
-                Crafting your itinerary
-              </p>
-              <p
-                style={{
-                  color: "rgba(255,255,255,0.35)",
-                  fontSize: 13,
-                  margin: 0,
-                }}
-              >
-                Our AI is planning every detail…
-              </p>
-            </div>
-            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-          </div>
+          <AgentLoading />
         )}
 
         {/* ══════════════════════════════════
@@ -972,6 +990,7 @@ export default function Planner() {
               </div>
             )}
 
+
             {/* ── Hero bar ── */}
             <PlannerHero
               result={{
@@ -988,6 +1007,8 @@ export default function Planner() {
               handleExportPDF={handleExportPDF}
               handleShareTrip={handleShareTrip}
             />
+
+
 
             <TravelPersonality
               travelStyle={travelStyle}

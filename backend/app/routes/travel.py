@@ -1,31 +1,27 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.travel_schema import TravelRequest
-from app.services.itinerary_service import generate_itinerary
-from app.services.budget_service import calculate_budget
-from app.services.hotel_service import filter_hotels_by_budget, get_hotels
 from app.utils.logger import logger
 from app.data.destination_images import DESTINATION_IMAGES
-from app.services.hotel_enrichment import enrich_hotels
+from app.agents.coordinator_agent import CoordinatorAgent
 
+coordinator_agent = CoordinatorAgent()
 router = APIRouter()
 
 @router.post("/generate-plan")
 def generate_plan(data: TravelRequest):
     try:
-        itinerary = generate_itinerary(data.destination, data.days)
-        budget = calculate_budget(data.budget)
+        agent_result = CoordinatorAgent().run(
+            destination=data.destination,
+            days=data.days,
+            budget=data.budget,
 
-        hotels = get_hotels()
-        filtered_hotels = filter_hotels_by_budget(
-            hotels,
-            budget["hotel"],
-            data.destination
+            travel_style=getattr(
+                data,
+                "travel_style",
+                "Relaxed"
+            )
         )
 
-        filtered_hotels = enrich_hotels(
-            filtered_hotels,
-            data.destination
-        )
         destination_image = DESTINATION_IMAGES.get(
             data.destination.lower(),
             "https://placehold.co/1600x500?text=Travel"
@@ -37,10 +33,21 @@ def generate_plan(data: TravelRequest):
             "message": "Travel plan generated successfully",
             "data": {
                 "destination": data.destination,
-                "itinerary": itinerary,
-                "budget": budget,
-                "hotels": filtered_hotels,
-                "destination_image": destination_image
+
+                "itinerary":
+                    agent_result["itinerary"],
+
+                "budget":
+                    agent_result["budget"],
+
+                "hotels":
+                    agent_result["hotels"],
+
+                "destination_image":
+                    destination_image,
+
+                "agent_logs":
+                    agent_result["logs"]
             }
         }
 

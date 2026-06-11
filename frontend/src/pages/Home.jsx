@@ -139,8 +139,11 @@ const Home = () => {
     if (Object.keys(validationErrors).length > 0) { setErrors(validationErrors); return; }
     try {
       setLoading(true);
-      const response = await generatePlan(formData);
-      navigate("/planner", { state: { formData, result: response.data } });
+      navigate("/planner", {
+        state: {
+          formData
+        }
+      });
     } catch (error) {
       alert("Error generating plan");
     } finally {
@@ -269,26 +272,40 @@ const Home = () => {
               backdropFilter: "blur(20px)",
               border: "1px solid rgba(255,255,255,0.08)",
               boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
-            }}>
+              borderRadius: "1rem",   // rounded-2xl equivalent
+            }}
+          >
             <form onSubmit={handleSubmit}>
               {/* Mobile: stacked, Desktop: row */}
               <div className="flex flex-col md:flex-row items-stretch p-5 md:p-8 gap-4 md:gap-0">
 
                 {/* Destination */}
-                <div className="flex-1 px-3 py-2 flex flex-col justify-center"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
-                // on desktop switch to border-right
+                <div
+                  data-dest-wrapper=""
+                  className="flex-1 px-3 py-2 flex flex-col justify-center"
+                  style={{ position: "relative", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" />
                     </svg>
-                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>Destination</span>
+                    <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      Destination
+                    </span>
                   </div>
-                  <input name="destination" value={formData.destination} onChange={handleChange}
+
+                  <input
+                    name="destination"
+                    value={formData.destination}
+                    onChange={handleChange}
                     placeholder="Where are you going?"
-                    className="bg-transparent text-white caret-white text-sm placeholder-gray-500 outline-none w-full" />
-                  {errors.destination && <span className="text-red-400 text-xs mt-1">{errors.destination}</span>}
+                    className="bg-transparent text-white caret-white text-sm placeholder-gray-500 outline-none w-full"
+                  />
+
+                  {errors.destination && (
+                    <span className="text-red-400 text-xs mt-1">{errors.destination}</span>
+                  )}
+
                 </div>
 
                 {/* Budget */}
