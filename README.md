@@ -15,3 +15,4 @@ frontend Setup:
 4. npm install jspdf html2canvas
 5. npm install react-leaflet leaflet
 6. npm install lucide-react
+7. npm install country-state-city
